@@ -1,4 +1,5 @@
 # app.py
+# app.py
 
 import streamlit as st
 import PyPDF2
@@ -10,25 +11,27 @@ from utils import (
     get_ai_feedback
 )
 
-# ---------------- UI ---------------- #
+# ---------------- PAGE CONFIG ---------------- #
 
 st.set_page_config(page_title="ResumeAI", page_icon="📄")
+
+# ---------------- UI ---------------- #
 
 st.title("ResumeAI 🚀")
 st.subheader("AI-Powered Resume Analyzer & Job Matcher")
 
-st.write("Upload your resume and get instant ATS scoring, skill analysis, and feedback.")
+st.write("Upload your resume and paste a job description to get ATS scoring, skill analysis, and AI feedback.")
+
+# ---------------- INPUTS ---------------- #
+
+uploaded_file = st.file_uploader("📄 Upload your resume (PDF only)", type=["pdf"])
 
 job_description = st.text_area(
-    "Paste Job Description",
+    "💼 Paste Job Description",
     placeholder="Paste the job description here..."
 )
 
-# ---------------- Upload ---------------- #
-
-uploaded_file = st.file_uploader("Upload your resume (PDF only)", type=["pdf"])
-
-# ---------------- Process ---------------- #
+# ---------------- PROCESS ---------------- #
 
 if uploaded_file is not None:
 
@@ -44,64 +47,77 @@ if uploaded_file is not None:
 
         st.success("✅ Resume uploaded successfully!")
 
-    except Exception as e:
-        st.error("Error reading PDF file.")
+    except Exception:
+        st.error("❌ Error reading PDF file.")
         st.stop()
 
-    # ---------------- Analysis ---------------- #
+    # ---------------- VALIDATION ---------------- #
 
-if job_description:
+    if not job_description:
+        st.warning("⚠️ Please paste a job description.")
+        st.stop()
+
+    if not resume_text:
+        st.warning("⚠️ Could not extract text from PDF.")
+        st.stop()
+
+    # ---------------- ANALYSIS ---------------- #
+
     score = get_similarity(resume_text, job_description)
     matched_keywords = get_keyword_match(resume_text, job_description)
     missing_skills = get_missing_skills(resume_text, job_description)
     feedback = get_ai_feedback(score)
 
-if not job_description:
-    st.warning("⚠️ Please paste a job description.")
-    st.stop()
+    # ---------------- DISPLAY ---------------- #
 
-        # ---------------- Display ---------------- #
+    st.divider()
 
-        st.divider()
+    st.subheader("📊 Resume Analysis")
 
-        st.subheader("📊 Resume Analysis")
+    st.metric("ATS Score", f"{score}/100")
 
-        st.metric("ATS Score", f"{score}/100")
-
-        st.subheader("✅ Matched Skills")
-        st.write(matched_keywords if matched_keywords else "No matches found")
-
-        st.subheader("⚠️ Missing Skills")
-        st.write(missing_skills if missing_skills else "None 🎉")
-
-        st.subheader("💡 AI Feedback")
-        st.write(feedback)
-
-        # ---------------- Download ---------------- #
-
-        report = f"""
-        Resume Analysis Report
-
-        ATS Score: {score}/100
-
-        Matched Skills:
-        {matched_keywords}
-
-        Missing Skills:
-        {missing_skills}
-
-        Feedback:
-        {feedback}
-        """
-
-        st.download_button(
-            label="📥 Download Report",
-            data=report,
-            file_name="resume_analysis.txt"
-        )
-
+    # Matched skills
+    st.subheader("✅ Matched Skills")
+    if matched_keywords:
+        st.write(matched_keywords)
     else:
-        st.warning("⚠️ Could not extract text from PDF.")
+        st.write("No matches found")
+
+    # Missing skills
+    st.subheader("⚠️ Missing Skills")
+    if missing_skills:
+        st.write(missing_skills)
+    else:
+        st.write("None 🎉")
+
+    # Feedback
+    st.subheader("💡 AI Feedback")
+    st.write(feedback)
+
+    # ---------------- DOWNLOAD REPORT ---------------- #
+
+    report = f"""
+Resume Analysis Report
+
+ATS Score: {score}/100
+
+Matched Skills:
+{matched_keywords}
+
+Missing Skills:
+{missing_skills}
+
+Feedback:
+{feedback}
+"""
+
+    st.download_button(
+        label="📥 Download Report",
+        data=report,
+        file_name="resume_analysis.txt"
+    )
+
+# ---------------- DEFAULT STATE ---------------- #
 
 else:
-    st.info("📄 Please upload a resume to begin analysis.")
+    st.info("📄 Upload your resume and add a job description to begin analysis.")
