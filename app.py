@@ -92,8 +92,7 @@ if st.button("Analyze 🚀"):
             score = float(get_similarity(resume, job))
             keyword_score, missing, job_type = get_keyword_match(resume, job)
 
-            st.write(f"🧠 Detected Job Type: {job_type}")echo "# ai-resume-analyzer" >> README.md
-
+            st.write(f"🧠 Detected Job Type: {job_type}")
             # ---- DISPLAY ----
             st.subheader("📊 Analysis Results")
 
