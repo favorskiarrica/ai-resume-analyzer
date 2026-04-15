@@ -1,0 +1,40 @@
+# 🤖 AI Resume Analyzer
+
+An AI-powered resume analysis tool that evaluates how well a resume matches a job description using Natural Language Processing (NLP) and cosine similarity.
+
+Built with Python, Streamlit, spaCy, and Scikit-learn.
+
+---
+
+## 🚀 Features
+
+- Resume vs Job Description matching
+- TF-IDF vectorization
+- Cosine similarity scoring
+- Keyword extraction
+- Missing keyword detection
+- ATS-style recruiter feedback
+- Clean interactive web interface (Streamlit)
+
+---
+
+## 🧠 How It Works
+
+1. Text is cleaned and normalized.
+2. Keywords are extracted using spaCy NLP.
+3. TF-IDF vectorization converts text into numerical representations.
+4. Cosine similarity measures alignment between resume and job description.
+5. Missing keywords are identified to improve ATS compatibility.
+
+---
+
+## 📊 Example Output
+
+- Match Score: 78%
+- Missing Keywords: ["Docker", "Kubernetes", "CI/CD"]
+- Recruiter Insight: Moderate match. Consider optimizing keywords.
+
+---
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+streamlit run app.py
