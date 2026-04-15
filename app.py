@@ -5,6 +5,7 @@ import streamlit as st
 import PyPDF2
 
 from utils import (
+    detect_job_type,
     get_similarity,
     get_keyword_match,
     get_missing_skills,
@@ -50,7 +51,9 @@ if uploaded_file is not None:
     except Exception:
         st.error("❌ Error reading PDF file.")
         st.stop()
+job_type = detect_job_type(job_description)
 
+st.write(f"🧠 Detected Job Type: {job_type}")
     # ---------------- VALIDATION ---------------- #
 
     if not job_description:
@@ -63,36 +66,30 @@ if uploaded_file is not None:
 
     # ---------------- ANALYSIS ---------------- #
 
-    score = get_similarity(resume_text, job_description)
-    matched_keywords = get_keyword_match(resume_text, job_description)
-    missing_skills = get_missing_skills(resume_text, job_description)
-    feedback = get_ai_feedback(score)
+score = get_similarity(resume_text, job_description, job_type)
+matched_keywords = get_keyword_match(resume_text, job_description, job_type)
+missing_skills = get_missing_skills(resume_text, job_description, job_type)
+feedback = get_ai_feedback(score)
 
     # ---------------- DISPLAY ---------------- #
+st.subheader("📊 Resume Analysis")
 
-    st.divider()
+st.metric("ATS Score", f"{score}/100")
 
-    st.subheader("📊 Resume Analysis")
+st.progress(score / 100)
 
-    st.metric("ATS Score", f"{score}/100")
+# Matched skills
+st.subheader("✅ Matched Skills")
+st.write(", ".join(matched_keywords[:20]))
 
-    # Matched skills
-    st.subheader("✅ Matched Skills")
-    if matched_keywords:
-        st.write(matched_keywords)
-    else:
-        st.write("No matches found")
+# Missing skills
+st.subheader("⚠️ Missing Skills")
+st.write(", ".join(missing_skills[:20]))
 
-    # Missing skills
-    st.subheader("⚠️ Missing Skills")
-    if missing_skills:
-        st.write(missing_skills)
-    else:
-        st.write("None 🎉")
-
-    # Feedback
-    st.subheader("💡 AI Feedback")
-    st.write(feedback)
+# Feedback
+st.subheader("💡 AI Feedback")
+st.write(feedback)
+   
 
     # ---------------- DOWNLOAD REPORT ---------------- #
 
