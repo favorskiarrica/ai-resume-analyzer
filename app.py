@@ -1,147 +1,99 @@
+# app.py
+
 import streamlit as st
-import base64
-import PyPDF2 as pdf
+import PyPDF2
 
-from utils import get_similarity, get_ai_feedback, get_keyword_match
+from utils import (
+    get_similarity,
+    get_keyword_match,
+    get_missing_skills,
+    get_ai_feedback
+)
 
+# ---------------- UI ---------------- #
+
+st.set_page_config(page_title="ResumeAI", page_icon="📄")
 
 st.title("ResumeAI 🚀")
+st.subheader("AI-Powered Resume Analyzer & Job Matcher")
 
-uploaded_file = st.file_uploader("Upload Resume")
+st.write("Upload your resume and get instant ATS scoring, skill analysis, and feedback.")
 
-if uploaded_file:
-    text = uploaded_file.read().decode("utf-8")
+# ---------------- Upload ---------------- #
 
-    score = get_similarity(text)
+uploaded_file = st.file_uploader("Upload your resume (PDF only)", type=["pdf"])
 
-    st.metric("ATS Score", f"{score}/100")
+# ---------------- Process ---------------- #
 
+if uploaded_file is not None:
 
-# ---- LOAD CSS ----
-def load_css():
-    with open("style.css") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    resume_text = ""
 
-load_css()
+    try:
+        pdf_reader = PyPDF2.PdfReader(uploaded_file)
 
-# ---- ELEPHANT IMAGE ----
-def show_elephant():
-    with open("elephant.png", "rb") as f:
-        data = base64.b64encode(f.read()).decode()
+        for page in pdf_reader.pages:
+            text = page.extract_text()
+            if text:
+                resume_text += text
 
-    st.markdown(
-        f"""
-        <div style="
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-        ">
-            <img src="data:image/png;base64,{data}" width="250"
-            style="
-                opacity: 0.7;
-                filter: drop-shadow(0 0 10px #00f5ff)
-                        drop-shadow(0 0 25px #9d00ff);
-            ">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.success("✅ Resume uploaded successfully!")
 
-show_elephant()
+    except Exception as e:
+        st.error("Error reading PDF file.")
+        st.stop()
 
-# ---- TITLE ----
-st.markdown("""
-<h1 style='text-align: center; 
-color: #00f5ff;
-text-shadow: 0 0 10px #00f5ff, 0 0 20px #9d00ff;'>
-🐘 AI Resume Analyzer
-</h1>
-<p style='text-align: center; color: white;'>
-Match your resume with job descriptions using AI
-</p>
-""", unsafe_allow_html=True)
+    # ---------------- Analysis ---------------- #
 
-# ---- PDF UPLOAD ----
-uploaded_file = st.file_uploader("📄 Upload your resume (PDF)", type=["pdf"])
+    if resume_text:
 
-def extract_text_from_pdf(file):
-    reader = PyPDF2.PdfReader(file)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text() or ""
-    return text
+        score = get_similarity(resume_text)
+        matched_keywords = get_keyword_match(resume_text)
+        missing_skills = get_missing_skills(resume_text)
+        feedback = get_ai_feedback(score)
 
-# ---- INPUTS ----
-if uploaded_file:
-    resume = extract_text_from_pdf(uploaded_file)
-    st.success("✅ Resume uploaded successfully!")
-else:
-    resume = st.text_area("📌 Paste your resume here", height=250)
+        # ---------------- Display ---------------- #
 
-job = st.text_area("📌 Paste job description here", height=250)
+        st.divider()
 
-# ---- ANALYZE BUTTON ----
-if st.button("Analyze 🚀"):
+        st.subheader("📊 Resume Analysis")
 
-    if not resume or not job:
-        st.warning("Please provide both resume and job description.")
+        st.metric("ATS Score", f"{score}/100")
+
+        st.subheader("✅ Matched Skills")
+        st.write(matched_keywords if matched_keywords else "No matches found")
+
+        st.subheader("⚠️ Missing Skills")
+        st.write(missing_skills if missing_skills else "None 🎉")
+
+        st.subheader("💡 AI Feedback")
+        st.write(feedback)
+
+        # ---------------- Download ---------------- #
+
+        report = f"""
+        Resume Analysis Report
+
+        ATS Score: {score}/100
+
+        Matched Skills:
+        {matched_keywords}
+
+        Missing Skills:
+        {missing_skills}
+
+        Feedback:
+        {feedback}
+        """
+
+        st.download_button(
+            label="📥 Download Report",
+            data=report,
+            file_name="resume_analysis.txt"
+        )
+
     else:
-        try:
-            # ---- SCORES ----
-            score = float(get_similarity(resume, job))
-            keyword_score, missing, job_type = get_keyword_match(resume, job)
+        st.warning("⚠️ Could not extract text from PDF.")
 
-            st.write(f"🧠 Detected Job Type: {job_type}")
-            # ---- DISPLAY ----
-            st.subheader("📊 Analysis Results")
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("Similarity Score", f"{score:.2f}%")
-
-            with col2:
-                st.metric("Keyword Match", f"{keyword_score:.2f}%")
-
-            # ---- PROGRESS BAR ----
-            st.progress(score / 100)
-
-            # ---- FEEDBACK LABEL ----
-            if score > 80:
-                st.success("🔥 Strong match! You're a great fit.")
-            elif score > 60:
-                st.info("👍 Decent match, but room for improvement.")
-            else:
-                st.warning("⚠️ Low match. Improve your resume.")
-
-            # ---- MISSING KEYWORDS ----
-            if missing:
-                st.subheader("❌ Missing Keywords")
-                st.write(", ".join(missing))
-
-            # ---- AI FEEDBACK ----
-            st.subheader("🤖 AI Feedback")
-
-            feedback = get_ai_feedback(resume, job)
-            st.write(feedback)
-
-            # ---- DOWNLOAD REPORT ----
-            report = f"""
-Match Score: {score:.2f}%
-Keyword Match: {keyword_score:.2f}%
-
-Missing Keywords:
-{", ".join(missing)}
-
-Feedback:
-{feedback}
-"""
-            st.download_button("📥 Download Report", report, file_name="resume_analysis.txt")
-
-        except Exception as e:
-            st.error("Something went wrong. Please try again.")
-            st.stop()
-score = get_similarity(resume_text)
-
-st.metric("ATS Score", f"{score}/100")
+else:
+    st.info("📄 Please upload a resume to begin analysis.")
