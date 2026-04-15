@@ -19,6 +19,11 @@ st.subheader("AI-Powered Resume Analyzer & Job Matcher")
 
 st.write("Upload your resume and get instant ATS scoring, skill analysis, and feedback.")
 
+job_description = st.text_area(
+    "Paste Job Description",
+    placeholder="Paste the job description here..."
+)
+
 # ---------------- Upload ---------------- #
 
 uploaded_file = st.file_uploader("Upload your resume (PDF only)", type=["pdf"])
@@ -45,12 +50,15 @@ if uploaded_file is not None:
 
     # ---------------- Analysis ---------------- #
 
-    if resume_text:
+if job_description:
+    score = get_similarity(resume_text, job_description)
+    matched_keywords = get_keyword_match(resume_text, job_description)
+    missing_skills = get_missing_skills(resume_text, job_description)
+    feedback = get_ai_feedback(score)
 
-        score = get_similarity(resume_text)
-        matched_keywords = get_keyword_match(resume_text)
-        missing_skills = get_missing_skills(resume_text)
-        feedback = get_ai_feedback(score)
+if not job_description:
+    st.warning("⚠️ Please paste a job description.")
+    st.stop()
 
         # ---------------- Display ---------------- #
 

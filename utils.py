@@ -1,62 +1,40 @@
 # utils.py
 
 def extract_keywords(text):
-    keywords = [
-        "python", "communication", "teamwork", "leadership",
-        "data analysis", "machine learning", "problem solving",
-        "project management", "sql", "excel"
-    ]
-    
-    text = text.lower()
-    found = [word for word in keywords if word in text]
-    
-    return found
+    return set(text.lower().split())
 
 
-def get_similarity(text):
-    keywords = [
-        "python", "communication", "teamwork", "leadership",
-        "data analysis", "machine learning", "problem solving",
-        "project management", "sql", "excel"
-    ]
-    
-    text_words = set(text.lower().split())
-    matched = len(text_words & set(keywords))
-    
-    score = (matched / len(keywords)) * 100
+def get_similarity(resume_text, job_text):
+    resume_words = extract_keywords(resume_text)
+    job_words = extract_keywords(job_text)
+
+    matched = resume_words & job_words
+
+    if len(job_words) == 0:
+        return 0
+
+    score = (len(matched) / len(job_words)) * 100
     return int(score)
 
 
-def get_keyword_match(text):
-    keywords = [
-        "python", "communication", "teamwork", "leadership",
-        "data analysis", "machine learning", "problem solving",
-        "project management", "sql", "excel"
-    ]
-    
-    text = text.lower()
-    matched = [word for word in keywords if word in text]
-    
-    return matched
+def get_keyword_match(resume_text, job_text):
+    resume_words = extract_keywords(resume_text)
+    job_words = extract_keywords(job_text)
+
+    return list(resume_words & job_words)
 
 
-def get_missing_skills(text):
-    keywords = [
-        "python", "communication", "teamwork", "leadership",
-        "data analysis", "machine learning", "problem solving",
-        "project management", "sql", "excel"
-    ]
-    
-    text = text.lower()
-    missing = [word for word in keywords if word not in text]
-    
-    return missing
+def get_missing_skills(resume_text, job_text):
+    resume_words = extract_keywords(resume_text)
+    job_words = extract_keywords(job_text)
+
+    return list(job_words - resume_words)
 
 
 def get_ai_feedback(score):
     if score > 75:
-        return "Strong resume! You're well aligned with the job."
+        return "Strong match! Your resume aligns well with this job."
     elif score > 50:
-        return "Good resume, but you can improve by adding more relevant skills."
+        return "Decent match, but you are missing some important keywords."
     else:
-        return "Resume needs improvement. Add more keywords and measurable achievements."
+        return "Low match. Tailor your resume to better fit this job description."
