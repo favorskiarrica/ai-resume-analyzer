@@ -1,4 +1,6 @@
-spacy==3.x.x
-pydantic==1.x.x
-numpy==...
-...
+streamlit
+sentence-transformers
+scikit-learn
+torch
+numpy
+pandas
