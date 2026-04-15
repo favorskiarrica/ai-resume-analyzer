@@ -1,15 +1,21 @@
 import streamlit as st
 import base64
-import PyPDF2
+import PyPDF2 as pdf
 
 from utils import get_similarity, get_ai_feedback, get_keyword_match
 
-# ---- PAGE CONFIG ----
-st.set_page_config(
-    page_title="AI Resume Analyzer",
-    page_icon="🐘",
-    layout="wide"
-)
+
+st.title("ResumeAI 🚀")
+
+uploaded_file = st.file_uploader("Upload Resume")
+
+if uploaded_file:
+    text = uploaded_file.read().decode("utf-8")
+
+    score = get_similarity(text)
+
+    st.metric("ATS Score", f"{score}/100")
+
 
 # ---- LOAD CSS ----
 def load_css():
@@ -86,7 +92,8 @@ if st.button("Analyze 🚀"):
             score = float(get_similarity(resume, job))
             keyword_score, missing, job_type = get_keyword_match(resume, job)
 
-            st.write(f"🧠 Detected Job Type: {job_type}")
+            st.write(f"🧠 Detected Job Type: {job_type}")echo "# ai-resume-analyzer" >> README.md
+
             # ---- DISPLAY ----
             st.subheader("📊 Analysis Results")
 
@@ -136,3 +143,6 @@ Feedback:
         except Exception as e:
             st.error("Something went wrong. Please try again.")
             st.stop()
+score = get_similarity(resume_text)
+
+st.metric("ATS Score", f"{score}/100")

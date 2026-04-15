@@ -144,3 +144,12 @@ def get_ai_feedback(resume, job):
         feedback.append("🔥 Strong resume! Well aligned.")
 
     return "\n\n".join(feedback)
+
+def calculate_score(resume_text, keywords):
+    matched = len(set(resume_text.split()) & set(keywords))
+    return matched
+
+def get_similarity(text):
+    keywords = ["python", "communication", "teamwork"]
+    match = len(set(text.lower().split()) & set(keywords))
+    return match * 10
