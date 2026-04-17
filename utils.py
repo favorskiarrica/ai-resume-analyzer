@@ -1,5 +1,4 @@
 import re
-from sentence_transformers import SentenceTransformer, util
 
 # ===============================
 # MODEL (Semantic Matching)
@@ -108,11 +107,7 @@ def extract_job_keywords(job_text, job_type):
 # ===============================
 # SEMANTIC MATCHING (AI UNDERSTANDING)
 # ===============================
-def semantic_match(resume_text, job_text):
-    resume_emb = model.encode(resume_text, convert_to_tensor=True)
-    job_emb = model.encode(job_text, convert_to_tensor=True)
 
-    return util.cos_sim(resume_emb, job_emb).item() * 100
 
 # ===============================
 # MATCHING ENGINE
@@ -126,16 +121,11 @@ def get_match_percentage(resume_text, job_text):
     matched = resume_words & job_keywords
     missing = job_keywords - resume_words
 
-    keyword_score = (
-        (len(matched) / len(job_keywords)) * 100
-        if job_keywords else 0
-    )
+    score = (len(matched) / len(job_keywords)) * 100 if job_keywords else 0
 
-    semantic_score = semantic_match(resume_text, job_text)
+    return int(score), list(matched), list(missing), job_type
 
-    final_score = (keyword_score * 0.5) + (semantic_score * 0.5)
 
-    return int(final_score), list(matched), list(missing), job_type
 
 # ===============================
 # FEEDBACK ENGINE
@@ -200,3 +190,51 @@ def generate_ai_suggestions(score, matched, missing, job_type):
     feedback.append("• Quantify your achievements (e.g., 'improved efficiency by 20%')")
 
     return "\n\n".join(feedback)
+
+def chat_response(user_input, score, matched, missing, job_type):
+    user_input = user_input.lower()
+
+    if "improve" in user_input:
+        return f"""
+🧠 To improve your resume for a {job_type} role:
+
+📌 Focus on missing skills: {', '.join(list(missing)[:5])}
+
+💡 Add these in context, not just lists (e.g. projects or work experience).
+
+📊 Your current match score is {score}%, so improving these areas will significantly increase your chances.
+"""
+
+    elif "missing" in user_input:
+        return f"""
+⚠️ Missing skills for {job_type}:
+{', '.join(list(missing)[:8])}
+
+These are the biggest gaps in your resume right now.
+"""
+
+    elif "strength" in user_input:
+        return f"""
+✅ Your strengths:
+{', '.join(list(matched)[:8])}
+
+These are strong signals for a {job_type} role.
+"""
+
+    elif "score" in user_input:
+        return f"""
+📊 Your current match score is {score}%.
+
+This reflects how well your resume aligns with the job description.
+"""
+
+    else:
+        return """
+💬 I can help you with:
+• Improving your resume
+• Missing skills
+• Strengths analysis
+• Score explanation
+
+Try asking: "How can I improve my resume?"
+"""
