@@ -1,5 +1,4 @@
 # app.py
-# app.py
 
 import streamlit as st
 import PyPDF2
@@ -51,49 +50,48 @@ if uploaded_file is not None:
     except Exception:
         st.error("❌ Error reading PDF file.")
         st.stop()
-job_type = detect_job_type(job_description)
 
-st.write(f"🧠 Detected Job Type: {job_type}")
     # ---------------- VALIDATION ---------------- #
 
-if not job_description:
-    st.warning("⚠️ Please paste a job description.")
-    st.stop()
+    if not job_description:
+        st.warning("⚠️ Please paste a job description.")
+        st.stop()
 
-if not resume_text:
-    st.warning("⚠️ Could not extract text from PDF.")
-    st.stop()
+    if not resume_text:
+        st.warning("⚠️ Could not extract text from PDF.")
+        st.stop()
+
+    # ---------------- JOB DETECTION ---------------- #
+
+    job_type = detect_job_type(job_description)
+    st.write(f"🧠 Detected Job Type: {job_type}")
 
     # ---------------- ANALYSIS ---------------- #
 
-score = get_similarity(resume_text, job_description, job_type)
-matched_keywords = get_keyword_match(resume_text, job_description, job_type)
-missing_skills = get_missing_skills(resume_text, job_description, job_type)
-feedback = get_ai_feedback(score)
+    score = get_similarity(resume_text, job_description, job_type)
+    matched_keywords = get_keyword_match(resume_text, job_description, job_type)
+    missing_skills = get_missing_skills(resume_text, job_description, job_type)
+    feedback = get_ai_feedback(score)
 
     # ---------------- DISPLAY ---------------- #
-st.subheader("📊 Resume Analysis")
 
-st.metric("ATS Score", f"{score}/100")
+    st.subheader("📊 Resume Analysis")
 
-st.progress(score / 100)
+    st.metric("ATS Score", f"{score}/100")
+    st.progress(score / 100)
 
-# Matched skills
-st.subheader("✅ Matched Skills")
-st.write(", ".join(matched_keywords[:20]))
+    st.subheader("✅ Matched Skills")
+    st.write(", ".join(matched_keywords[:20]))
 
-# Missing skills
-st.subheader("⚠️ Missing Skills")
-st.write(", ".join(missing_skills[:20]))
+    st.subheader("⚠️ Missing Skills")
+    st.write(", ".join(missing_skills[:20]))
 
-# Feedback
-st.subheader("💡 AI Feedback")
-st.write(feedback)
-   
+    st.subheader("💡 AI Feedback")
+    st.write(feedback)
 
-    # ---------------- DOWNLOAD REPORT ---------------- #
+    # ---------------- DOWNLOAD ---------------- #
 
-report = f"""
+    report = f"""
 Resume Analysis Report
 
 ATS Score: {score}/100
@@ -108,13 +106,13 @@ Feedback:
 {feedback}
 """
 
-st.download_button(
-    label="📥 Download Report",
-    data=report,
-    file_name="resume_analysis.txt"
+    st.download_button(
+        label="📥 Download Report",
+        data=report,
+        file_name="resume_analysis.txt"
     )
 
-# ---------------- DEFAULT STATE ---------------- #
+# ---------------- DEFAULT ---------------- #
 
 else:
     st.info("📄 Upload your resume and add a job description to begin analysis.")
