@@ -21,15 +21,23 @@ def clean_text(text):
 def extract_job_keywords(job_text):
     words = clean_text(job_text)
 
+    # Remove generic job-description words
+    BAD_WORDS = {
+        "job", "role", "responsibilities", "requirements",
+        "candidate", "ideal", "seeking", "will", "join",
+        "our", "description", "position", "work"
+    }
+
+    words = [w for w in words if w not in BAD_WORDS]
+
+    # Frequency scoring
     freq = {}
     for word in words:
         freq[word] = freq.get(word, 0) + 1
 
-    # sort by importance (frequency)
     sorted_words = sorted(freq, key=freq.get, reverse=True)
 
-    return set(sorted_words[:30])  # top 30 important words
-
+    return set(sorted_words[:20])  # smaller + cleaner
 
 # ---------------- MATCHING ENGINE ---------------- #
 
