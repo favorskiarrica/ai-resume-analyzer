@@ -3,9 +3,10 @@
 import re
 
 STOPWORDS = {
-    "the", "and", "is", "in", "to", "of", "a", "for", "on",
-    "with", "as", "by", "an", "at", "from", "this", "that",
-    "be", "are", "or", "it", "your"
+    "the","and","is","in","to","of","a","for","on","with","as","by","an","at","from",
+    "this","that","be","are","or","it","your","will","we","our",
+    "you","they","their","them",
+    "experience
 }
 
 # ---------------- CLEAN TEXT ---------------- #
