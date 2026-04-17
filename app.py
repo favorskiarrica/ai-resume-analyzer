@@ -56,13 +56,13 @@ job_type = detect_job_type(job_description)
 st.write(f"🧠 Detected Job Type: {job_type}")
     # ---------------- VALIDATION ---------------- #
 
-    if not job_description:
-        st.warning("⚠️ Please paste a job description.")
-        st.stop()
+if not job_description:
+    st.warning("⚠️ Please paste a job description.")
+    st.stop()
 
-    if not resume_text:
-        st.warning("⚠️ Could not extract text from PDF.")
-        st.stop()
+if not resume_text:
+    st.warning("⚠️ Could not extract text from PDF.")
+    st.stop()
 
     # ---------------- ANALYSIS ---------------- #
 
