@@ -10,18 +10,40 @@ STOPWORDS = {
 
 # ---------------- CLEAN TEXT ---------------- #
 
+import re
+
 def clean_text(text):
     text = re.sub(r"[^\w\s]", "", text.lower())
     words = text.split()
-    return [w for w in words if w not in STOPWORDS and len(w) > 2]
+
+    # normalize common variations
+    normalized = []
+    for w in words:
+        if w.startswith("treat"):
+            normalized.append("treat")
+        elif w.startswith("diagnos"):
+            normalized.append("diagnose")
+        elif w.startswith("evaluat"):
+            normalized.append("evaluate")
+        elif w.startswith("perform"):
+            normalized.append("perform")
+        elif w.startswith("develop"):
+            normalized.append("develop")
+        else:
+            normalized.append(w)
+
+    return [w for w in normalized if len(w) > 2]
 
 
 # ---------------- EXTRACT KEYWORDS ---------------- #
 
+IMPORTANT_VERBS = {
+    "diagnose", "treat", "evaluate", "perform", "develop"
+}
+
 def extract_job_keywords(job_text):
     words = clean_text(job_text)
 
-    # Remove generic job-description words
     BAD_WORDS = {
         "job", "role", "responsibilities", "requirements",
         "candidate", "ideal", "seeking", "will", "join",
@@ -30,15 +52,18 @@ def extract_job_keywords(job_text):
 
     words = [w for w in words if w not in BAD_WORDS]
 
-    # Frequency scoring
     freq = {}
     for word in words:
         freq[word] = freq.get(word, 0) + 1
 
+    # boost important verbs
+    for word in IMPORTANT_VERBS:
+        if word in freq:
+            freq[word] += 2
+
     sorted_words = sorted(freq, key=freq.get, reverse=True)
 
-    return set(sorted_words[:20])  # smaller + cleaner
-
+    return set(sorted_words[:20])
 # ---------------- MATCHING ENGINE ---------------- #
 
 def get_match_percentage(resume_text, job_text):
