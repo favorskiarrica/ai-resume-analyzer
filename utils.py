@@ -47,7 +47,7 @@ def extract_job_keywords(job_text):
     BAD_WORDS = {
         "job", "role", "responsibilities", "requirements",
         "candidate", "ideal", "seeking", "will", "join",
-        "our", "description", "position", "work","the","are","team","particulary"
+        "our", "description", "position", "work","the","are","team","particularly"
     }
 
     words = [w for w in words if w not in BAD_WORDS]
