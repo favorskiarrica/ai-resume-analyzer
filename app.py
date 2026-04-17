@@ -64,11 +64,12 @@ if uploaded_file is not None:
 
     # ---------------- ANALYSIS ---------------- #
 
-    match_score, matched_keywords, missing_skills = get_match_percentage(
-        resume_text, job_description
-    )
+match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
+    resume_text, job_text
+)
+    st.write("Detected Job Type:", job_type)
 
-    feedback = get_ai_feedback(match_score)
+feedback = get_ai_feedback(match_score)
 
     # ---------------- DISPLAY ---------------- #
 
