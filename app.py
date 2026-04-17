@@ -1,15 +1,11 @@
-# app.py
-
 import streamlit as st
 import PyPDF2
 
-from utils import get_match_percentage, get_ai_feedback, detect_job_type
+from utils import get_match_percentage, get_ai_feedback
 
 # ---------------- PAGE CONFIG ---------------- #
 
 st.set_page_config(page_title="ResumeAI", page_icon="📄")
-
-# ---------------- UI ---------------- #
 
 st.title("ResumeAI 🚀")
 st.subheader("Smart Resume → Job Matching")
@@ -27,7 +23,7 @@ job_description = st.text_area(
 
 # ---------------- PROCESS ---------------- #
 
-if uploaded_file is not None:
+if uploaded_file is not None and job_description:
 
     resume_text = ""
 
@@ -45,55 +41,35 @@ if uploaded_file is not None:
         st.error("❌ Error reading PDF.")
         st.stop()
 
-    # ---------------- VALIDATION ---------------- #
-
-    if not job_description:
-        st.warning("⚠️ Please paste a job description.")
-        st.stop()
-
     if not resume_text:
         st.warning("⚠️ Could not extract text from PDF.")
         st.stop()
 
-    # ---------------- CAREER DETECTION ---------------- #
-
-    job_type = detect_job_type(job_description)
-
-    st.subheader("🧠 Detected Career Field")
-    st.info(job_type)
-
     # ---------------- ANALYSIS ---------------- #
 
-match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
-    resume_text, job_text
-)
-st.write("Detected Job Type:", job_type)
+    match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
+        resume_text, job_description
+    )
 
-feedback = get_ai_feedback(match_score)
+    feedback = get_ai_feedback(match_score)
 
     # ---------------- DISPLAY ---------------- #
 
     st.divider()
 
+    st.subheader("🧠 Detected Career Field")
+    st.info(job_type)
+
     st.subheader("🎯 Job Match Score")
     st.metric("Match %", f"{match_score}%")
     st.progress(match_score / 100)
 
-    # Matched
     st.subheader("✅ Matching Skills")
-    if matched_keywords:
-        st.write(", ".join(matched_keywords[:15]))
-    else:
-        st.write("No strong matches found")
+    st.write(", ".join(matched_keywords[:15]) if matched_keywords else "No strong matches found")
 
-    # Missing
     st.subheader("⚠️ Missing Key Skills")
-    if missing_skills:
-        st.write(", ".join(missing_skills[:15]))
-    else:
-        st.write("You're covering all key areas 🎉")
+    st.write(", ".join(missing_skills[:15]) if missing_skills else "You're covering all key areas 🎉")
 
-    # Feedback
     st.subheader("💡 AI Feedback")
     st.write(feedback)
 
@@ -122,8 +98,6 @@ Feedback:
         data=report,
         file_name="resume_analysis.txt"
     )
-
-# ---------------- DEFAULT ---------------- #
 
 else:
     st.info("📄 Upload your resume and add a job description to begin.")
