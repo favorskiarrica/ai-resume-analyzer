@@ -93,7 +93,7 @@ st.write(feedback)
 
     # ---------------- DOWNLOAD REPORT ---------------- #
 
-    report = f"""
+report = f"""
 Resume Analysis Report
 
 ATS Score: {score}/100
