@@ -63,9 +63,9 @@ if uploaded_file and job_description and resume_text:
 
     # ---------------- ANALYSIS ---------------- #
 
-match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
-    resume_text,
-    job_description
+    match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
+        resume_text,
+        job_description
 )
     feedback = generate_ai_suggestions(
         match_score,
