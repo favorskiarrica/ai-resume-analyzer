@@ -1,103 +1,105 @@
 import re
 
-# ---------------- STOPWORDS ---------------- #
+# =========================================================
+# STOPWORDS (noise removal)
+# ========================================================= #
 
 STOPWORDS = {
     "the","and","is","in","to","of","a","for","on","with","as","by","an","at","from",
     "this","that","be","are","or","it","your","will","we","our",
     "you","they","their","them",
-    "experience","job","role","responsibilities","requirements",
-    "candidate","ideal","seeking","join","description","position","work"
+    "job","role","responsibilities","requirements",
+    "candidate","ideal","seeking","join","description","position","work",
+    "experience"
 }
 
-# ---------------- TEXT CLEANING ---------------- #
+# =========================================================
+# CLEAN TEXT
+# ========================================================= #
 
 def clean_text(text):
     text = re.sub(r"[^\w\s]", "", text.lower())
     words = text.split()
-
-    normalized = []
-
-    for w in words:
-        if w.startswith("treat"):
-            normalized.append("treat")
-        elif w.startswith("diagnos"):
-            normalized.append("diagnose")
-        elif w.startswith("evaluat"):
-            normalized.append("evaluate")
-        elif w.startswith("perform"):
-            normalized.append("perform")
-        elif w.startswith("develop"):
-            normalized.append("develop")
-        else:
-            normalized.append(w)
-
-    return [w for w in normalized if len(w) > 2 and w not in STOPWORDS]
+    return [w for w in words if w not in STOPWORDS and len(w) > 2]
 
 
-# ---------------- JOB TYPE DETECTION ---------------- #
+# =========================================================
+# JOB SKILL DATABASE (MULTI-CAREER SUPPORT)
+# ========================================================= #
 
-JOB_CATEGORIES = {
-    "Data Analyst": ["data", "analysis", "sql", "excel", "tableau", "power", "dashboard", "statistics"],
-    "Software Engineer": ["python", "java", "api", "backend", "frontend", "git", "debugging", "algorithms"],
-    "Healthcare": ["patient", "clinical", "medical", "diagnosis", "treatment", "care"],
-    "Chiropractor": ["chiropractic", "spinal", "adjustment", "therapy", "musculoskeletal"]
+JOB_SKILLS = {
+    "Data Analyst": {
+        "sql","python","excel","tableau","power bi","pandas","numpy",
+        "statistics","data analysis","data visualization","dashboards",
+        "reporting","etl","data cleaning","forecasting","a/b testing"
+    },
+
+    "Software Engineer": {
+        "python","java","c++","javascript","react","node","api",
+        "git","algorithms","data structures","debugging","backend",
+        "frontend","database"
+    },
+
+    "Healthcare": {
+        "patient","diagnosis","treatment","clinical","medical",
+        "care","healthcare","assessment","documentation","rehabilitation"
+    },
+
+    "Chiropractor": {
+        "spinal","adjustment","therapy","musculoskeletal","treatment",
+        "rehabilitation","patient care","alignment","pain management"
+    }
 }
+
+
+# =========================================================
+# JOB TYPE DETECTION
+# ========================================================= #
 
 def detect_job_type(job_text):
     words = set(clean_text(job_text))
-
     scores = {}
 
-    for job, keywords in JOB_CATEGORIES.items():
-        scores[job] = len(words & set(keywords))
+    for job, skills in JOB_SKILLS.items():
+        scores[job] = len(words & skills)
 
-    best_match = max(scores, key=scores.get)
-
-    return best_match
+    return max(scores, key=scores.get)
 
 
-# ---------------- KEYWORD EXTRACTION ---------------- #
+# =========================================================
+# SKILL EXTRACTION (JOB-AWARE)
+# ========================================================= #
 
-IMPORTANT_VERBS = {
-    "diagnose", "treat", "evaluate", "perform", "develop"
-}
-
-def extract_job_keywords(job_text):
-    words = clean_text(job_text)
-
-    freq = {}
-
-    for word in words:
-        freq[word] = freq.get(word, 0) + 1
-
-    # boost important verbs
-    for word in IMPORTANT_VERBS:
-        if word in freq:
-            freq[word] += 2
-
-    sorted_words = sorted(freq, key=freq.get, reverse=True)
-
-    return set(sorted_words[:20])
+def extract_skills(words, job_type):
+    skill_set = JOB_SKILLS.get(job_type, set())
+    return set(w for w in words if w in skill_set)
 
 
-# ---------------- MATCHING ENGINE ---------------- #
+# =========================================================
+# MATCHING ENGINE (CORE LOGIC)
+# ========================================================= #
 
 def get_match_percentage(resume_text, job_text):
-    resume_words = set(clean_text(resume_text))
-    job_keywords = extract_job_keywords(job_text)
-
-    matched = resume_words & job_keywords
-    missing = job_keywords - resume_words
-
-    score = (len(matched) / len(job_keywords)) * 100 if job_keywords else 0
 
     job_type = detect_job_type(job_text)
+
+    resume_words = set(clean_text(resume_text))
+    job_words = set(clean_text(job_text))
+
+    resume_skills = extract_skills(resume_words, job_type)
+    job_skills = extract_skills(job_words, job_type)
+
+    matched = resume_skills & job_skills
+    missing = job_skills - resume_skills
+
+    score = (len(matched) / len(job_skills)) * 100 if job_skills else 0
 
     return int(score), list(matched), list(missing), job_type
 
 
-# ---------------- CHATGPT-STYLE FEEDBACK ---------------- #
+# =========================================================
+# AI-STYLE FEEDBACK ENGINE (NO API REQUIRED)
+# ========================================================= #
 
 def generate_ai_suggestions(score, matched, missing, job_type):
 
@@ -105,18 +107,17 @@ def generate_ai_suggestions(score, matched, missing, job_type):
     missing = list(missing)
 
     response = []
-
     response.append("🧠 AI Resume Coach Analysis\n")
 
-    # Score logic
+    # Score interpretation
     if score >= 80:
         response.append(f"Your resume is highly competitive for a {job_type} role.")
     elif score >= 60:
-        response.append(f"Good foundation for a {job_type} role, but improvements are needed.")
+        response.append(f"Good match for a {job_type} role, but improvements are needed.")
     elif score >= 40:
-        response.append(f"Moderate match for a {job_type} role. Key gaps exist.")
+        response.append(f"Moderate match for a {job_type} role. Several gaps exist.")
     else:
-        response.append(f"Low match for a {job_type} role. Major improvements required.")
+        response.append(f"Low match for a {job_type} role. Significant improvements required.")
 
     # Missing skills
     if missing:
@@ -130,14 +131,16 @@ def generate_ai_suggestions(score, matched, missing, job_type):
 
     # Advice
     response.append("\n🚀 Improvement Tips:")
-    response.append("• Add missing skills into experience section")
-    response.append("• Use job keywords naturally (not just lists)")
+    response.append("• Add missing skills into experience (not just lists)")
+    response.append("• Use job keywords naturally in bullet points")
     response.append("• Quantify achievements (e.g. improved efficiency by 20%)")
 
     return "\n".join(response)
 
 
-# ---------------- CHAT SYSTEM (NO API NEEDED) ---------------- #
+# =========================================================
+# CHAT SYSTEM (CHATGPT-STYLE RESPONSES)
+# ========================================================= #
 
 def chat_response(user_input, score, matched, missing, job_type):
 
@@ -147,23 +150,24 @@ def chat_response(user_input, score, matched, missing, job_type):
         return f"""
 🧠 To improve your resume for a {job_type} role:
 
-📌 Focus on: {', '.join(list(missing)[:5])}
+📌 Focus on missing skills:
+{', '.join(missing[:5])}
 
-📊 Your current match score is {score}%.
+📊 Current match score: {score}%
 
-💡 Add these skills into real experience examples, not just a list.
+💡 Add skills into real work experience examples.
 """
 
     elif "missing" in user_input:
         return f"""
-⚠️ Missing Skills:
-{', '.join(list(missing)[:8])}
+⚠️ Missing Skills for {job_type}:
+{', '.join(missing[:8])}
 """
 
     elif "strength" in user_input:
         return f"""
-✅ Strengths:
-{', '.join(list(matched)[:8])}
+✅ Your Strengths:
+{', '.join(matched[:8])}
 """
 
     elif "score" in user_input:
@@ -173,9 +177,9 @@ def chat_response(user_input, score, matched, missing, job_type):
 
     else:
         return """
-💬 Ask me:
-• How can I improve my resume?
-• What am I missing?
-• What are my strengths?
-• What is my score?
+💬 I can help you with:
+• How to improve your resume
+• Missing skills
+• Strengths
+• Score explanation
 """
