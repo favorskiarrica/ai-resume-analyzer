@@ -149,3 +149,54 @@ def get_ai_feedback(score):
         return "⚠️ Moderate match. Improve keyword and skill alignment."
     else:
         return "❌ Low match. Resume needs significant tailoring."
+
+def generate_ai_suggestions(score, matched, missing, job_type):
+    feedback = []
+
+    # ---------------- Overall assessment ---------------- #
+    if score >= 80:
+        feedback.append(
+            "🔥 Strong resume match. Your profile aligns well with this role."
+        )
+    elif score >= 60:
+        feedback.append(
+            "👍 Good match, but a few key improvements can make you stand out."
+        )
+    elif score >= 40:
+        feedback.append(
+            "⚠️ Moderate match. Your resume needs stronger alignment with job requirements."
+        )
+    else:
+        feedback.append(
+            "❌ Low match. Significant tailoring is needed for this role."
+        )
+
+    # ---------------- Missing skills insight ---------------- #
+    if missing:
+        top_missing = list(missing)[:5]
+
+        feedback.append(
+            f"📌 You are missing key skills for a {job_type} role: "
+            + ", ".join(top_missing)
+        )
+
+        feedback.append(
+            "💡 Recommendation: Add these skills in your skills section and demonstrate them in experience bullet points."
+        )
+
+    # ---------------- Matched skills reinforcement ---------------- #
+    if matched:
+        top_matched = list(matched)[:5]
+
+        feedback.append(
+            "✅ Strengths detected in your resume: "
+            + ", ".join(top_matched)
+        )
+
+    # ---------------- Action plan ---------------- #
+    feedback.append("🚀 Next steps:")
+    feedback.append("• Tailor your resume to the job description")
+    feedback.append("• Add missing keywords naturally in experience section")
+    feedback.append("• Quantify your achievements (e.g., 'improved efficiency by 20%')")
+
+    return "\n\n".join(feedback)
