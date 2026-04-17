@@ -4,30 +4,20 @@ import PyPDF2
 from utils import (
     get_match_percentage,
     generate_ai_suggestions,
-    chat_response
+    chat_response,
+    detect_job_type
 )
 
 # ---------------- PAGE CONFIG ---------------- #
 
-st.set_page_config(
-    page_title="ResumeAI",
-    page_icon="📄",
-    layout="centered"
-)
+st.set_page_config(page_title="ResumeAI", page_icon="📄")
 
-# ---------------- SESSION STATE (CHAT MEMORY) ---------------- #
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-# ---------------- HEADER ---------------- #
+# ---------------- UI HEADER ---------------- #
 
 st.title("ResumeAI 🚀")
-st.subheader("AI Resume Analyzer + Chat Coach")
+st.subheader("Smart Resume → Job Matching System")
 
-st.write("Upload your resume and paste a job description to analyze your match and chat with your AI coach.")
-
-st.divider()
+st.write("Upload your resume and paste a job description to analyze your fit.")
 
 # ---------------- INPUTS ---------------- #
 
@@ -35,14 +25,15 @@ uploaded_file = st.file_uploader("📄 Upload Resume (PDF)", type=["pdf"])
 
 job_description = st.text_area(
     "💼 Paste Job Description",
-    placeholder="Paste the job description here..."
+    placeholder="Paste job description here..."
 )
 
-# ---------------- PROCESS RESUME ---------------- #
+# ---------------- PROCESS ---------------- #
 
-resume_text = ""
+if uploaded_file is not None and job_description:
 
-if uploaded_file:
+    resume_text = ""
+
     try:
         pdf_reader = PyPDF2.PdfReader(uploaded_file)
 
@@ -54,19 +45,20 @@ if uploaded_file:
         st.success("✅ Resume uploaded successfully!")
 
     except Exception:
-        st.error("❌ Could not read PDF file.")
+        st.error("❌ Error reading PDF.")
         st.stop()
 
-# ---------------- VALIDATION ---------------- #
-
-if uploaded_file and job_description and resume_text:
+    if not resume_text:
+        st.warning("⚠️ Could not extract text from resume.")
+        st.stop()
 
     # ---------------- ANALYSIS ---------------- #
 
-    match_score, matched_keywords, missing_skills, job_type = get_match_percentage(
+    match_score, matched_keywords, missing_skills, job_type, seniority = get_match_percentage(
         resume_text,
         job_description
-)
+    )
+
     feedback = generate_ai_suggestions(
         match_score,
         matched_keywords,
@@ -74,81 +66,81 @@ if uploaded_file and job_description and resume_text:
         job_type
     )
 
-    # ---------------- RESULTS ---------------- #
+    # ---------------- RESULTS UI ---------------- #
 
     st.divider()
 
-    st.subheader("🧠 Detected Job Type")
+    st.subheader("🧠 Detected Career Field")
     st.info(job_type)
 
-    st.subheader("🎯 Match Score")
+    st.subheader("📊 Seniority Level Detected")
+    st.info(seniority)
+
+    st.subheader("🎯 Job Match Score")
     st.metric("Match %", f"{match_score}%")
     st.progress(match_score / 100)
 
+    # ---------------- MATCHED SKILLS ---------------- #
+
     st.subheader("✅ Matching Skills")
-    st.write(", ".join(list(matched_keywords)[:15]) if matched_keywords else "No strong matches found")
+    if matched_keywords:
+        st.write(", ".join(matched_keywords))
+    else:
+        st.write("No strong matches found")
 
-    st.subheader("⚠️ Missing Skills")
-    st.write(", ".join(list(missing_skills)[:15]) if missing_skills else "No major gaps 🎉")
+    # ---------------- MISSING SKILLS ---------------- #
 
-    st.subheader("🧠 AI Resume Coach Feedback")
-    st.markdown(feedback)
+    st.subheader("⚠️ Missing Key Skills")
+    if missing_skills:
+        st.write(", ".join(missing_skills))
+    else:
+        st.write("You're covering all key skills 🎉")
+
+    # ---------------- AI FEEDBACK ---------------- #
+
+    st.subheader("💡 AI Resume Coach Feedback")
+    st.write(feedback)
 
     # ---------------- CHAT SECTION ---------------- #
 
     st.divider()
-
     st.subheader("💬 AI Resume Chat Coach")
 
-    user_input = st.text_input("Ask anything about your resume")
+    user_question = st.text_input("Ask anything about your resume:")
 
-    if user_input:
-
-        reply = chat_response(
-            user_input,
+    if user_question:
+        response = chat_response(
+            user_question,
             match_score,
             matched_keywords,
             missing_skills,
             job_type
         )
-
-        st.session_state.chat_history.append(("user", user_input))
-        st.session_state.chat_history.append(("ai", reply))
-
-    # ---------------- CHAT DISPLAY ---------------- #
-
-    for role, msg in st.session_state.chat_history:
-
-        if role == "user":
-            st.markdown(f"🧑‍💻 **You:** {msg}")
-        else:
-            st.markdown(f"🧠 **AI Coach:** {msg}")
+        st.write(response)
 
     # ---------------- DOWNLOAD REPORT ---------------- #
 
     report = f"""
-========================
-Resume AI Report
-========================
+Resume Analysis Report
 
 Job Type: {job_type}
-
+Seniority: {seniority}
 Match Score: {match_score}%
 
-Matched Skills:
-{list(matched_keywords)}
+Matching Skills:
+{matched_keywords}
 
 Missing Skills:
-{list(missing_skills)}
+{missing_skills}
 
-AI Feedback:
+Feedback:
 {feedback}
 """
 
     st.download_button(
         label="📥 Download Report",
         data=report,
-        file_name="resume_ai_report.txt"
+        file_name="resume_report.txt"
     )
 
 # ---------------- DEFAULT STATE ---------------- #

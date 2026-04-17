@@ -28,29 +28,32 @@ def clean_text(text):
 # ========================================================= #
 
 JOB_SKILLS = {
-    "Data Analyst": {
-        "sql","python","excel","tableau","power bi","pandas","numpy",
-        "statistics","data analysis","data visualization","dashboards",
-        "reporting","etl","data cleaning","forecasting","a/b testing"
+    "Business": {
+        "analysis", "strategy", "communication", "leadership",
+        "project management", "excel", "finance", "marketing",
+        "sales", "reporting", "data analysis", "business intelligence",
+        "forecasting", "budgeting", "operations", "decision making"
     },
 
     "Software Engineer": {
-        "python","java","c++","javascript","react","node","api",
-        "git","algorithms","data structures","debugging","backend",
-        "frontend","database"
+        "python", "java", "c++", "javascript", "react",
+        "node", "api", "git", "algorithms", "data structures",
+        "debugging", "backend", "frontend", "database"
     },
 
     "Healthcare": {
-        "patient","diagnosis","treatment","clinical","medical",
-        "care","healthcare","assessment","documentation","rehabilitation"
+        "patient", "diagnosis", "treatment", "clinical",
+        "medical", "care", "healthcare", "assessment",
+        "documentation", "rehabilitation"
     },
 
-    "Chiropractor": {
-        "spinal","adjustment","therapy","musculoskeletal","treatment",
-        "rehabilitation","patient care","alignment","pain management"
+    "Retail": {
+        "customer service", "sales", "inventory", "cash handling",
+        "merchandising", "stock management", "communication",
+        "point of sale", "upselling", "product knowledge",
+        "retail operations", "teamwork", "store management"
     }
 }
-
 
 # =========================================================
 # JOB TYPE DETECTION
@@ -94,8 +97,9 @@ def get_match_percentage(resume_text, job_text):
 
     score = (len(matched) / len(job_skills)) * 100 if job_skills else 0
 
-    return int(score), list(matched), list(missing), job_type
+    seniority = detect_seniority(resume_text)
 
+    return int(score), list(matched), list(missing), job_type, seniority
 
 # =========================================================
 # AI-STYLE FEEDBACK ENGINE (NO API REQUIRED)
@@ -183,3 +187,53 @@ def chat_response(user_input, score, matched, missing, job_type):
 • Strengths
 • Score explanation
 """
+
+def detect_seniority(resume_text):
+
+    text = resume_text.lower()
+
+    junior_keywords = [
+        "intern", "internship", "junior", "entry level",
+        "assistant", "trainee", "graduate"
+    ]
+
+    senior_keywords = [
+        "senior", "lead", "manager", "head", "director",
+        "principal", "architect", "team lead"
+    ]
+
+    experience_years = 0
+
+    # Try to detect years of experience (simple pattern)
+    import re
+    match = re.findall(r"(\d+)\+?\s*(years|year)", text)
+
+    if match:
+        experience_years = max([int(m[0]) for m in match])
+
+    # Score system
+    score = 0
+
+    # Junior signals
+    if any(word in text for word in junior_keywords):
+        score -= 2
+
+    # Senior signals
+    if any(word in text for word in senior_keywords):
+        score += 3
+
+    # Experience-based scoring
+    if experience_years <= 2:
+        score -= 1
+    elif 3 <= experience_years <= 5:
+        score += 1
+    elif experience_years > 5:
+        score += 3
+
+    # Final classification
+    if score <= 0:
+        return "Junior"
+    elif score <= 3:
+        return "Mid-Level"
+    else:
+        return "Senior"
