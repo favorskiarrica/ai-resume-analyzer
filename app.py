@@ -88,7 +88,7 @@ if uploaded_file is not None:
     # Missing
     st.subheader("⚠️ Missing Key Skills")
     if missing_skills:
-        st.write(", ".join(missing_skwords[:15]))
+        st.write(", ".join(missing_skills[:15]))
     else:
         st.write("You're covering all key areas 🎉")
 
