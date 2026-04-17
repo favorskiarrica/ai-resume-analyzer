@@ -108,10 +108,10 @@ Feedback:
 {feedback}
 """
 
-    st.download_button(
-        label="📥 Download Report",
-        data=report,
-        file_name="resume_analysis.txt"
+st.download_button(
+    label="📥 Download Report",
+    data=report,
+    file_name="resume_analysis.txt"
     )
 
 # ---------------- DEFAULT STATE ---------------- #
