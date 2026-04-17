@@ -3,19 +3,29 @@ import PyPDF2
 
 from utils import (
     get_match_percentage,
-    generate_ai_suggestions
+    generate_ai_suggestions,
+    chat_response
 )
 
 # ---------------- PAGE CONFIG ---------------- #
 
-st.set_page_config(page_title="ResumeAI", page_icon="📄", layout="centered")
+st.set_page_config(
+    page_title="ResumeAI",
+    page_icon="📄",
+    layout="centered"
+)
+
+# ---------------- SESSION STATE (CHAT MEMORY) ---------------- #
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
 # ---------------- HEADER ---------------- #
 
 st.title("ResumeAI 🚀")
-st.subheader("AI Resume → Job Matching & Feedback System")
+st.subheader("AI Resume Analyzer + Chat Coach")
 
-st.write("Upload your resume and paste a job description to analyze your match.")
+st.write("Upload your resume and paste a job description to analyze your match and chat with your AI coach.")
 
 st.divider()
 
@@ -28,12 +38,11 @@ job_description = st.text_area(
     placeholder="Paste the job description here..."
 )
 
-# ---------------- MAIN LOGIC ---------------- #
+# ---------------- PROCESS RESUME ---------------- #
 
-if uploaded_file and job_description:
+resume_text = ""
 
-    resume_text = ""
-
+if uploaded_file:
     try:
         pdf_reader = PyPDF2.PdfReader(uploaded_file)
 
@@ -48,9 +57,9 @@ if uploaded_file and job_description:
         st.error("❌ Could not read PDF file.")
         st.stop()
 
-    if not resume_text.strip():
-        st.warning("⚠️ No readable text found in PDF.")
-        st.stop()
+# ---------------- VALIDATION ---------------- #
+
+if uploaded_file and job_description and resume_text:
 
     # ---------------- ANALYSIS ---------------- #
 
@@ -77,53 +86,68 @@ if uploaded_file and job_description:
     st.metric("Match %", f"{match_score}%")
     st.progress(match_score / 100)
 
-    # ---------------- MATCHED SKILLS ---------------- #
-
     st.subheader("✅ Matching Skills")
-    if matched_keywords:
-        st.write(", ".join(list(matched_keywords)[:15]))
-    else:
-        st.write("No strong matches found")
+    st.write(", ".join(list(matched_keywords)[:15]) if matched_keywords else "No strong matches found")
 
-    # ---------------- MISSING SKILLS ---------------- #
-
-    st.subheader("⚠️ Missing Key Skills")
-    if missing_skills:
-        st.write(", ".join(list(missing_skills)[:15]))
-    else:
-        st.write("No major missing skills 🎉")
-
-    # ---------------- AI FEEDBACK ---------------- #
+    st.subheader("⚠️ Missing Skills")
+    st.write(", ".join(list(missing_skills)[:15]) if missing_skills else "No major gaps 🎉")
 
     st.subheader("🧠 AI Resume Coach Feedback")
     st.markdown(feedback)
 
+    # ---------------- CHAT SECTION ---------------- #
+
+    st.divider()
+
+    st.subheader("💬 AI Resume Chat Coach")
+
+    user_input = st.text_input("Ask anything about your resume")
+
+    if user_input:
+
+        reply = chat_response(
+            user_input,
+            match_score,
+            matched_keywords,
+            missing_skills,
+            job_type
+        )
+
+        st.session_state.chat_history.append(("user", user_input))
+        st.session_state.chat_history.append(("ai", reply))
+
+    # ---------------- CHAT DISPLAY ---------------- #
+
+    for role, msg in st.session_state.chat_history:
+
+        if role == "user":
+            st.markdown(f"🧑‍💻 **You:** {msg}")
+        else:
+            st.markdown(f"🧠 **AI Coach:** {msg}")
+
     # ---------------- DOWNLOAD REPORT ---------------- #
 
     report = f"""
-=============================
-Resume AI Analysis Report
-=============================
+========================
+Resume AI Report
+========================
 
 Job Type: {job_type}
 
 Match Score: {match_score}%
 
------------------------------
-Matching Skills:
+Matched Skills:
 {list(matched_keywords)}
 
------------------------------
 Missing Skills:
 {list(missing_skills)}
 
------------------------------
 AI Feedback:
 {feedback}
 """
 
     st.download_button(
-        label="📥 Download Full Report",
+        label="📥 Download Report",
         data=report,
         file_name="resume_ai_report.txt"
     )
