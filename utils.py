@@ -102,14 +102,14 @@ JOB_SKILLS = {
 # =========================================================
 # SYNONYMS / SMART MATCHING
 # =========================================================
-
 SYNONYMS = {
     "ehr": "electronic health records",
     "emr": "electronic medical records",
     "pos": "point of sale",
     "ml": "machine learning",
     "ai": "artificial intelligence",
-    "bi": "business intelligence"
+    "bi": "business intelligence",
+    "strategy": "strategic planning"
 }
 
 # =========================================================
