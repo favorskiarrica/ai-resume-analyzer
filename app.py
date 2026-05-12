@@ -1,6 +1,80 @@
 import streamlit as st
 import PyPDF2
 
+import streamlit as st
+
+# =========================
+# DARK MODE STYLING
+# =========================
+
+st.markdown("""
+<style>
+
+/* Main app background */
+.stApp {
+    background-color: #0E1117;
+    color: white;
+}
+
+/* Text color */
+html, body, [class*="css"]  {
+    color: white;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #161B22;
+}
+
+/* Input boxes */
+.stTextInput input,
+.stTextArea textarea {
+    background-color: #262730;
+    color: white;
+    border-radius: 10px;
+}
+
+/* File uploader */
+[data-testid="stFileUploader"] {
+    background-color: #262730;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: #4F8BF9;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+}
+
+/* Metric cards */
+[data-testid="metric-container"] {
+    background-color: #1E1E1E;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+/* Success box */
+.stSuccess {
+    background-color: #1E4620;
+}
+
+/* Warning box */
+.stWarning {
+    background-color: #4B3B00;
+}
+
+/* Info box */
+.stInfo {
+    background-color: #102A43;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 from utils import (
     get_match_percentage,
     generate_ai_suggestions,
