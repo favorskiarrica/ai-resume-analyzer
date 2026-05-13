@@ -21,7 +21,11 @@ st.set_page_config(
 # LOAD CSS
 # =========================================================
 
-st.markdown(open("styles.css").read(), unsafe_allow_html=True)
+CSS = """
+/* paste your full CSS here */
+"""
+
+st.markdown(f"<style>{CSS}</style>", unsafe_allow_html=True)
 
 # =========================================================
 # HERO
