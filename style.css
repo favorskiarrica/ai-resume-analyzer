@@ -1,28 +1,28 @@
-st.markdown("""
-<style>
-
 /* =========================================================
-CORE BACKGROUND (DARK + CLEANER CONTRAST)
+BACKGROUND (CYBER DARK YC STYLE)
 ========================================================= */
 
 .stApp {
-    background: radial-gradient(circle at top, #070A12 0%, #05060B 55%, #02030A 100%);
+    background: radial-gradient(circle at top,
+        #070A12 0%,
+        #05060B 55%,
+        #02030A 100%);
     color: #E5E7EB;
 }
 
-/* subtle cyan glow overlay (NOT purple-heavy anymore) */
+/* soft neon glow overlay */
 .stApp::before {
     content: "";
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(circle at 15% 20%, rgba(0,255,200,0.08), transparent 45%),
-        radial-gradient(circle at 85% 30%, rgba(56,189,248,0.07), transparent 45%);
+        radial-gradient(circle at 20% 20%, rgba(0,255,200,0.07), transparent 45%),
+        radial-gradient(circle at 80% 30%, rgba(56,189,248,0.06), transparent 45%);
     pointer-events: none;
 }
 
 /* =========================================================
-GLOBAL TEXT (IMPROVED READABILITY)
+TEXT
 ========================================================= */
 
 html, body, [class*="css"] {
@@ -31,66 +31,66 @@ html, body, [class*="css"] {
 }
 
 /* =========================================================
-GLASS CARD (UNIFIED — FIXES MIXED BOX COLORS)
+HERO
+========================================================= */
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 900;
+    text-align: center;
+
+    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+    text-align: center;
+    color: #94A3B8;
+    margin-bottom: 2rem;
+}
+
+/* =========================================================
+GLOBAL CARDS (FIX WHITE BOX ISSUE)
 ========================================================= */
 
 div[data-testid="stVerticalBlock"],
 div[data-testid="stHorizontalBlock"] {
     background: rgba(255,255,255,0.03) !important;
     border: 1px solid rgba(0,255,200,0.12) !important;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 0 18px rgba(0,255,200,0.04);
+    border-radius: 16px;
+    padding: 14px;
 }
 
 /* =========================================================
-FILE UPLOADER (FIX WHITE BOX BUG COMPLETELY)
+FILE UPLOADER (FIXED WHITE BUG COMPLETELY)
 ========================================================= */
 
-/* outer uploader */
 [data-testid="stFileUploader"] {
     background: rgba(2,6,23,0.85) !important;
     border: 1px solid rgba(0,255,200,0.18) !important;
-    border-radius: 16px !important;
-    padding: 14px !important;
-    box-shadow: inset 0 0 12px rgba(0,255,200,0.05);
+    border-radius: 14px;
+    padding: 12px;
 }
 
-/* dropzone (THIS is the real white culprit) */
 [data-testid="stFileUploaderDropzone"] {
-    background: rgba(2,6,23,0.65) !important;
-    border: none !important;
-    color: #E5E7EB !important;
-}
-
-/* file text inside uploader */
-[data-testid="stFileUploader"] * {
-    color: #CBD5E1 !important;
+    background: rgba(2,6,23,0.75) !important;
 }
 
 /* =========================================================
-TEXT INPUTS (FIX LOW CONTRAST PURPLE ISSUE)
+TEXT INPUTS
 ========================================================= */
 
 textarea,
 input {
     background: rgba(2,6,23,0.85) !important;
     color: #E5E7EB !important;
-
     border: 1px solid rgba(0,255,200,0.15) !important;
     border-radius: 12px !important;
 }
 
-/* focus state (important for UX) */
-textarea:focus,
-input:focus {
-    border: 1px solid rgba(56,189,248,0.6) !important;
-    box-shadow: 0 0 10px rgba(56,189,248,0.15) !important;
-    outline: none !important;
-}
-
 /* =========================================================
-METRICS (CLEAN DARK PANELS)
+METRICS
 ========================================================= */
 
 [data-testid="metric-container"] {
@@ -101,28 +101,25 @@ METRICS (CLEAN DARK PANELS)
 }
 
 /* =========================================================
-BUTTONS (REMOVE PURPLE DOMINANCE → CYAN/GREEN)
+BUTTONS (CYBER GREEN BLUE ONLY)
 ========================================================= */
 
 .stButton > button {
     width: 100%;
     background: linear-gradient(90deg, #00FFC6, #38BDF8);
     color: #05060B;
-
-    border: none;
     border-radius: 12px;
     font-weight: 800;
-
-    box-shadow: 0 0 18px rgba(0,255,200,0.25);
+    border: none;
 }
 
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(0,255,200,0.35);
+    box-shadow: 0 0 20px rgba(0,255,200,0.25);
 }
 
 /* =========================================================
-PROGRESS BAR (CLEAN CYAN)
+PROGRESS BAR
 ========================================================= */
 
 .stProgress > div > div > div > div {
@@ -130,13 +127,10 @@ PROGRESS BAR (CLEAN CYAN)
 }
 
 /* =========================================================
-SIDEBAR (LESS PURPLE, MORE NEUTRAL CYBER)
+SIDEBAR
 ========================================================= */
 
 section[data-testid="stSidebar"] {
-    background: rgba(2,6,23,0.92);
+    background: rgba(2,6,23,0.95);
     border-right: 1px solid rgba(0,255,200,0.12);
 }
-
-</style>
-""", unsafe_allow_html=True)
