@@ -20,7 +20,56 @@ st.set_page_config(
 # =========================
 # CSS (SAFE + SIMPLE + STABLE)
 # =========================
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* FORCE FONT SYSTEM */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* REMOVE STREAMLIT PURPLE TEXT STYLE */
+h1, h2, h3, p, span, label {
+    color: #E5E7EB !important;
+}
+
+/* HERO TITLE (MAKE IT STARTUP-LEVEL) */
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+
+    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+    font-size: 1.05rem;
+    color: #94A3B8;
+}
+
+/* METRICS TEXT FIX */
+[data-testid="metric-container"] label {
+    color: #94A3B8 !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="metric-container"] div {
+    color: #E5E7EB !important;
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+}
+
+/* INPUT TEXT IMPROVEMENT */
+textarea, input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.95rem !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 st.markdown("""
 <style>
 
