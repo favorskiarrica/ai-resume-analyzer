@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# PREMIUM UI STYLING
+# CLEAN PREMIUM UI
 # =========================================================
 
 st.markdown("""
@@ -32,9 +32,9 @@ BACKGROUND
     background:
     linear-gradient(
         135deg,
-        #0F172A 0%,
+        #0B1120 0%,
         #111827 50%,
-        #1E293B 100%
+        #172554 100%
     );
     color: white;
 }
@@ -51,19 +51,25 @@ html, body, [class*="css"] {
 .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
-    max-width: 1200px;
+    max-width: 1150px;
 }
 
 /* =========================================================
-HERO SECTION
+TITLE
 ========================================================= */
 
 .hero-title {
-    font-size: 4rem;
+    font-size: 4.5rem;
     font-weight: 800;
     text-align: center;
-    margin-bottom: 0;
-    background: linear-gradient(90deg, #60A5FA, #A78BFA);
+    margin-bottom: 0.5rem;
+
+    background: linear-gradient(
+        90deg,
+        #60A5FA,
+        #A78BFA
+    );
+
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -76,29 +82,42 @@ HERO SECTION
 }
 
 /* =========================================================
-GLASS CARDS
+CARDS
 ========================================================= */
 
 .card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
     padding: 25px;
+
     border-radius: 22px;
+
     margin-bottom: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
 }
 
 /* =========================================================
-TEXT INPUTS
+TEXT AREA
 ========================================================= */
 
-.stTextArea textarea,
-.stTextInput input {
-    background-color: rgba(255,255,255,0.08);
-    color: white;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.15);
+textarea {
+    background-color: rgba(15,23,42,0.90) !important;
+    color: white !important;
+
+    border-radius: 14px !important;
+
+    border: 1px solid rgba(255,255,255,0.10) !important;
+}
+
+/* =========================================================
+INPUTS
+========================================================= */
+
+input {
+    background-color: rgba(15,23,42,0.90) !important;
+    color: white !important;
 }
 
 /* =========================================================
@@ -106,9 +125,12 @@ UPLOAD BOX
 ========================================================= */
 
 [data-testid="stFileUploader"] {
-    background-color: rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 15px;
+    background-color: rgba(15,23,42,0.75);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
     border: 1px solid rgba(255,255,255,0.10);
 }
 
@@ -117,7 +139,9 @@ BUTTONS
 ========================================================= */
 
 .stButton > button {
+
     width: 100%;
+
     background:
     linear-gradient(
         90deg,
@@ -126,27 +150,40 @@ BUTTONS
     );
 
     color: white;
+
     border: none;
+
     border-radius: 14px;
+
     padding: 14px;
-    font-weight: 700;
+
     font-size: 16px;
-    transition: 0.3s;
+
+    font-weight: 700;
+
+    transition: 0.25s;
 }
 
 .stButton > button:hover {
-    transform: scale(1.02);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(59,130,246,0.35);
 }
 
 /* =========================================================
-METRIC CARDS
+METRICS
 ========================================================= */
 
 [data-testid="metric-container"] {
-    background: rgba(255,255,255,0.05);
-    border-radius: 18px;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
     padding: 20px;
-    border: 1px solid rgba(255,255,255,0.10);
+
+    border-radius: 20px;
 }
 
 /* =========================================================
@@ -154,6 +191,7 @@ PROGRESS BAR
 ========================================================= */
 
 .stProgress > div > div > div > div {
+
     background:
     linear-gradient(
         90deg,
@@ -163,34 +201,30 @@ PROGRESS BAR
 }
 
 /* =========================================================
+INFO BOXES
+========================================================= */
+
+.stInfo,
+.stSuccess,
+.stWarning {
+
+    border-radius: 14px;
+}
+
+/* =========================================================
 SIDEBAR
 ========================================================= */
 
 section[data-testid="stSidebar"] {
+
     background: #0F172A;
-}
-
-/* =========================================================
-INFO / SUCCESS / WARNING
-========================================================= */
-
-.stInfo {
-    background-color: rgba(59,130,246,0.15);
-}
-
-.stSuccess {
-    background-color: rgba(16,185,129,0.15);
-}
-
-.stWarning {
-    background-color: rgba(245,158,11,0.15);
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# HERO SECTION
+# HERO
 # =========================================================
 
 st.markdown("""
@@ -207,7 +241,7 @@ AI-Powered Resume Intelligence & ATS Optimization
 # INPUT SECTION
 # =========================================================
 
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns(2)
 
 with col1:
 
@@ -226,7 +260,7 @@ with col2:
 
     job_description = st.text_area(
         "💼 Paste Job Description",
-        height=250,
+        height=300,
         placeholder="Paste the job description here..."
     )
 
@@ -260,7 +294,7 @@ if uploaded_file is not None and job_description:
 
     if not resume_text:
 
-        st.warning("⚠️ Could not extract text from PDF.")
+        st.warning("⚠️ Could not extract text from the PDF.")
         st.stop()
 
     # =========================================================
@@ -291,15 +325,15 @@ if uploaded_file is not None and job_description:
     # TOP METRICS
     # =========================================================
 
-    metric1, metric2, metric3 = st.columns(3)
+    m1, m2, m3 = st.columns(3)
 
-    with metric1:
+    with m1:
         st.metric("🎯 Match Score", f"{match_score}%")
 
-    with metric2:
+    with m2:
         st.metric("💼 Career Field", job_type)
 
-    with metric3:
+    with m3:
         st.metric("📈 Seniority", seniority)
 
     st.progress(match_score / 100)
@@ -307,7 +341,7 @@ if uploaded_file is not None and job_description:
     st.divider()
 
     # =========================================================
-    # RESULTS CARDS
+    # SKILLS SECTION
     # =========================================================
 
     colA, colB = st.columns(2)
@@ -351,7 +385,7 @@ if uploaded_file is not None and job_description:
     st.markdown('</div>', unsafe_allow_html=True)
 
     # =========================================================
-    # CHATBOT
+    # CHAT COACH
     # =========================================================
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -381,29 +415,21 @@ if uploaded_file is not None and job_description:
     # =========================================================
 
     report = f"""
-Juxtapose Merit - Resume Analysis Report
-
-==================================================
+Juxtapose Merit - ATS Report
 
 Career Field: {job_type}
 
-Seniority Level: {seniority}
+Seniority: {seniority}
 
 Match Score: {match_score}%
 
-==================================================
-
-MATCHING SKILLS:
+Matching Skills:
 {', '.join(matched_keywords)}
 
-==================================================
-
-MISSING SKILLS:
+Missing Skills:
 {', '.join(missing_skills)}
 
-==================================================
-
-AI FEEDBACK:
+AI Feedback:
 {feedback}
 """
 
@@ -415,16 +441,12 @@ AI FEEDBACK:
     )
 
 # =========================================================
-# DEFAULT SCREEN
+# DEFAULT STATE
 # =========================================================
 
 else:
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
 
     st.info(
         "📄 Upload your resume and paste a job description "
         "to begin ATS analysis."
     )
-
-    st.markdown('</div>', unsafe_allow_html=True)
