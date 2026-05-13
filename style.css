@@ -1,183 +1,99 @@
+st.markdown("""
+<style>
+
 /* =========================================================
-CYBER YC DARK THEME (CLEAN + FIXED)
+GLOBAL RESET (FORCES DARK MODE)
 ========================================================= */
 
-/* =========================
-BACKGROUND
-========================= */
-
 .stApp {
-    background: radial-gradient(circle at top,
-        #070A12 0%,
-        #05060B 55%,
-        #02030A 100%);
-    color: #E5E7EB;
+    background: #05060B !important;
+    color: #E5E7EB !important;
 }
 
-/* soft neon aurora overlay */
-.stApp::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(0,255,200,0.07), transparent 45%),
-        radial-gradient(circle at 80% 30%, rgba(56,189,248,0.06), transparent 45%),
-        radial-gradient(circle at 50% 80%, rgba(16,185,129,0.04), transparent 50%);
-    pointer-events: none;
+/* kill Streamlit default white panels */
+section, div {
+    background: transparent !important;
 }
 
-/* =========================
-GLOBAL TEXT
-========================= */
+/* =========================================================
+TEXT (REMOVE PURPLE DEFAULTS)
+========================================================= */
 
 html, body, [class*="css"] {
-    font-family: Inter, sans-serif;
-    color: #E5E7EB;
+    font-family: Inter, sans-serif !important;
+    color: #E5E7EB !important;
 }
 
-/* =========================
-HERO TITLE
-========================= */
-
-.hero-title {
-    font-size: 4rem;
-    font-weight: 900;
-    text-align: center;
-
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    text-shadow: 0 0 25px rgba(0,255,198,0.15);
+/* FORCE ALL LABELS TO BE READABLE */
+label, p, span, h1, h2, h3 {
+    color: #E5E7EB !important;
 }
 
-.hero-sub {
-    text-align: center;
-    color: #94A3B8;
-    margin-bottom: 2rem;
-}
-
-/* =========================
-UNIFIED GLASS CONTAINERS
-(FIXES RANDOM WHITE BOXES)
-========================= */
-
-div[data-testid="stVerticalBlock"],
-div[data-testid="stHorizontalBlock"] {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,255,200,0.12) !important;
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 0 18px rgba(0,255,200,0.04);
-}
-
-/* =========================
-FILE UPLOADER (FIXED WHITE BUG)
-========================= */
+/* =========================================================
+UPLOAD BOX (ROBUST FIX)
+========================================================= */
 
 [data-testid="stFileUploader"] {
-    background: rgba(2,6,23,0.88) !important;
-    border: 1px solid rgba(0,255,200,0.18) !important;
-    border-radius: 14px;
-    padding: 12px;
-    box-shadow: inset 0 0 10px rgba(0,255,200,0.05);
+    background: #0B1220 !important;
+    border: 1px solid rgba(0,255,200,0.25) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
 }
 
-/* THIS IS THE REAL FIX FOR WHITE BOX */
+/* inner uploader fix */
 [data-testid="stFileUploaderDropzone"] {
-    background: rgba(2,6,23,0.75) !important;
-    border: none !important;
+    background: #0B1220 !important;
 }
 
-/* uploader text */
-[data-testid="stFileUploader"] * {
-    color: #CBD5E1 !important;
-}
-
-/* =========================
-TEXT INPUTS
-========================= */
+/* =========================================================
+INPUTS
+========================================================= */
 
 textarea,
 input {
-    background: rgba(2,6,23,0.85) !important;
+    background: #0B1220 !important;
     color: #E5E7EB !important;
+    border: 1px solid rgba(0,255,200,0.2) !important;
+    border-radius: 10px !important;
+}
 
-    border: 1px solid rgba(0,255,200,0.15) !important;
+/* =========================================================
+METRICS (REMOVE WHITE CARDS)
+========================================================= */
+
+[data-testid="metric-container"] {
+    background: #0B1220 !important;
+    border: 1px solid rgba(0,255,200,0.2) !important;
     border-radius: 12px !important;
 }
 
-/* focus state */
-textarea:focus,
-input:focus {
-    border: 1px solid rgba(56,189,248,0.6) !important;
-    box-shadow: 0 0 10px rgba(56,189,248,0.15) !important;
-    outline: none !important;
-}
-
-/* =========================
-METRICS
-========================= */
-
-[data-testid="metric-container"] {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,255,200,0.12) !important;
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: 0 0 15px rgba(0,255,200,0.04);
-}
-
-/* metric labels */
-[data-testid="metric-container"] label {
-    color: #94A3B8 !important;
-}
-
-/* =========================
-BUTTONS (CYBER NEON CORE)
-========================= */
+/* =========================================================
+BUTTONS (CYBER GREEN BLUE)
+========================================================= */
 
 .stButton > button {
-    width: 100%;
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
-    color: #05060B;
-
-    border: none;
-    border-radius: 12px;
-
-    font-weight: 800;
-
-    box-shadow: 0 0 18px rgba(0,255,200,0.25);
-    transition: 0.2s ease-in-out;
+    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
+    color: #05060B !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 800 !important;
 }
 
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 28px rgba(0,255,200,0.35);
-}
-
-/* =========================
+/* =========================================================
 PROGRESS BAR
-========================= */
+========================================================= */
 
 .stProgress > div > div > div > div {
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
 }
 
-/* =========================
-SIDEBAR
-========================= */
+/* =========================================================
+SIDEBAR FIX
+========================================================= */
 
 section[data-testid="stSidebar"] {
-    background: rgba(2,6,23,0.95);
-    border-right: 1px solid rgba(0,255,200,0.12);
+    background: #05060B !important;
 }
 
-/* =========================
-INFO / WARN / SUCCESS
-========================= */
-
-.stAlert {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,255,200,0.12) !important;
-    border-radius: 12px;
-}
+</style>
+""", unsafe_allow_html=True)
