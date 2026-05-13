@@ -20,140 +20,55 @@ st.set_page_config(
 # =========================================================
 # SAFE INLINE CSS (NO FILE DEPENDENCY)
 # =========================================================
-
 st.markdown("""
 <style>
 
-/* =========================
-BASE DARK BACKGROUND
-========================= */
-
+/* FORCE APP BACKGROUND */
 .stApp {
-    background: radial-gradient(circle at top,
-        #070A12 0%,
-        #05060B 60%,
-        #02030A 100%);
-    color: #E5E7EB;
-}
-
-/* subtle neon glow */
-.stApp::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(0,255,200,0.06), transparent 45%),
-        radial-gradient(circle at 80% 30%, rgba(56,189,248,0.05), transparent 45%);
-    pointer-events: none;
-}
-
-/* =========================
-TEXT
-========================= */
-
-html, body, [class*="css"] {
-    font-family: Inter, sans-serif;
-    color: #E5E7EB;
-}
-
-/* =========================
-TITLE (YC STYLE)
-========================= */
-
-.hero-title {
-    font-size: 3.8rem;
-    font-weight: 900;
-    text-align: center;
-
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero-sub {
-    text-align: center;
-    color: #94A3B8;
-    margin-bottom: 2rem;
-}
-
-/* =========================
-CARDS (SAFE STREAMLIT VERSION)
-========================= */
-
-div[data-testid="stVerticalBlock"] {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,255,200,0.10) !important;
-    border-radius: 14px;
-    padding: 12px;
-}
-
-/* =========================
-FILE UPLOADER (FIXED WHITE BOX)
-========================= */
-
-section[data-testid="stFileUploader"] {
-    background: rgba(2,6,23,0.9) !important;
-    border: 1px solid rgba(0,255,200,0.15) !important;
-    border-radius: 12px;
-    padding: 10px;
-}
-
-/* =========================
-TEXT INPUTS
-========================= */
-
-textarea,
-input {
-    background: rgba(2,6,23,0.85) !important;
+    background: #05060B !important;
     color: #E5E7EB !important;
-    border: 1px solid rgba(0,255,200,0.15) !important;
-    border-radius: 10px !important;
 }
 
-/* =========================
-BUTTONS (NEON CYAN GREEN)
-========================= */
-
-.stButton > button {
-    width: 100%;
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
-    color: #05060B;
-    border: none;
-    border-radius: 10px;
-    font-weight: 800;
-    padding: 10px;
+/* REMOVE STREAMLIT DEFAULT SURFACES */
+section, div {
+    background: transparent !important;
 }
 
-.stButton > button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 18px rgba(0,255,200,0.25);
+/* TEXT FIX (PURPLE REMOVAL) */
+h1, h2, h3, p, span, label {
+    color: #E5E7EB !important;
 }
 
-/* =========================
-METRICS
-========================= */
+/* FILE UPLOADER FIX */
+[data-testid="stFileUploader"] {
+    background: #0B1220 !important;
+    border: 1px solid #00FFC6 !important;
+    border-radius: 12px !important;
+}
 
+/* INPUT FIELDS */
+textarea, input {
+    background: #0B1220 !important;
+    color: white !important;
+    border: 1px solid #00FFC6 !important;
+}
+
+/* METRICS */
 [data-testid="metric-container"] {
-    background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,255,200,0.10) !important;
-    border-radius: 12px;
+    background: #0B1220 !important;
+    border: 1px solid #00FFC6 !important;
 }
 
-/* =========================
-PROGRESS BAR
-========================= */
+/* BUTTONS */
+.stButton > button {
+    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
+    color: #05060B !important;
+    font-weight: 800 !important;
+}
 
+/* PROGRESS BAR */
 .stProgress > div > div > div > div {
-    background: linear-gradient(90deg, #00FFC6, #38BDF8);
-}
-
-/* =========================
-SIDEBAR
-========================= */
-
-section[data-testid="stSidebar"] {
-    background: rgba(2,6,23,0.95);
-    border-right: 1px solid rgba(0,255,200,0.10);
+    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
 }
 
 </style>
