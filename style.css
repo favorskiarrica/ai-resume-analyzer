@@ -1,30 +1,29 @@
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* =========================
-HARD DARK MODE LOCK
+GLOBAL FONT LOCK
 ========================= */
 
-.stApp {
-    background: #05060B !important;
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
     color: #E5E7EB !important;
 }
 
-/* kill streamlit default styling */
-* {
-    font-family: Inter, sans-serif !important;
-}
-
-/* TEXT FIX (THIS IS WHAT YOU’RE MISSING) */
-h1, h2, h3, p, span, label, div {
+/* FORCE TEXT CONSISTENCY */
+h1, h2, h3, p, span, label {
     color: #E5E7EB !important;
 }
 
-/* HERO */
+/* =========================
+HERO UPGRADE (THIS IS WHAT YOU’RE MISSING)
+========================= */
+
 .hero-title {
     font-size: 4rem;
     font-weight: 800;
-    text-align: center;
+    letter-spacing: -1.5px;
 
     background: linear-gradient(90deg, #00FFC6, #38BDF8);
     -webkit-background-clip: text;
@@ -32,35 +31,42 @@ h1, h2, h3, p, span, label, div {
 }
 
 .hero-sub {
-    text-align: center;
+    font-size: 1.05rem;
     color: #94A3B8;
 }
 
-/* FILE UPLOADER */
-[data-testid="stFileUploader"] {
-    background: #0B1220 !important;
-    border: 1px solid #00FFC6 !important;
-    border-radius: 12px !important;
+/* =========================
+METRICS TYPOGRAPHY FIX
+========================= */
+
+[data-testid="metric-container"] label {
+    color: #94A3B8 !important;
+    font-weight: 500 !important;
 }
 
-/* INPUTS */
-textarea, input {
-    background: #0B1220 !important;
+[data-testid="metric-container"] div {
     color: #E5E7EB !important;
-    border: 1px solid #00FFC6 !important;
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
 }
 
-/* METRICS */
-[data-testid="metric-container"] {
-    background: #0B1220 !important;
-    border: 1px solid #00FFC6 !important;
+/* =========================
+INPUT TEXT
+========================= */
+
+textarea, input {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.95rem !important;
 }
 
-/* BUTTONS */
+/* =========================
+BUTTON TEXT
+========================= */
+
 .stButton > button {
-    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
-    color: #05060B !important;
-    font-weight: 800 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px;
 }
 
 </style>
