@@ -1,98 +1,66 @@
 st.markdown("""
 <style>
 
-/* =========================================================
-GLOBAL RESET (FORCES DARK MODE)
-========================================================= */
+/* =========================
+HARD DARK MODE LOCK
+========================= */
 
 .stApp {
     background: #05060B !important;
     color: #E5E7EB !important;
 }
 
-/* kill Streamlit default white panels */
-section, div {
-    background: transparent !important;
-}
-
-/* =========================================================
-TEXT (REMOVE PURPLE DEFAULTS)
-========================================================= */
-
-html, body, [class*="css"] {
+/* kill streamlit default styling */
+* {
     font-family: Inter, sans-serif !important;
+}
+
+/* TEXT FIX (THIS IS WHAT YOU’RE MISSING) */
+h1, h2, h3, p, span, label, div {
     color: #E5E7EB !important;
 }
 
-/* FORCE ALL LABELS TO BE READABLE */
-label, p, span, h1, h2, h3 {
-    color: #E5E7EB !important;
+/* HERO */
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    text-align: center;
+
+    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* =========================================================
-UPLOAD BOX (ROBUST FIX)
-========================================================= */
+.hero-sub {
+    text-align: center;
+    color: #94A3B8;
+}
 
+/* FILE UPLOADER */
 [data-testid="stFileUploader"] {
     background: #0B1220 !important;
-    border: 1px solid rgba(0,255,200,0.25) !important;
+    border: 1px solid #00FFC6 !important;
     border-radius: 12px !important;
-    padding: 12px !important;
 }
 
-/* inner uploader fix */
-[data-testid="stFileUploaderDropzone"] {
-    background: #0B1220 !important;
-}
-
-/* =========================================================
-INPUTS
-========================================================= */
-
-textarea,
-input {
+/* INPUTS */
+textarea, input {
     background: #0B1220 !important;
     color: #E5E7EB !important;
-    border: 1px solid rgba(0,255,200,0.2) !important;
-    border-radius: 10px !important;
+    border: 1px solid #00FFC6 !important;
 }
 
-/* =========================================================
-METRICS (REMOVE WHITE CARDS)
-========================================================= */
-
+/* METRICS */
 [data-testid="metric-container"] {
     background: #0B1220 !important;
-    border: 1px solid rgba(0,255,200,0.2) !important;
-    border-radius: 12px !important;
+    border: 1px solid #00FFC6 !important;
 }
 
-/* =========================================================
-BUTTONS (CYBER GREEN BLUE)
-========================================================= */
-
+/* BUTTONS */
 .stButton > button {
     background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
     color: #05060B !important;
-    border: none !important;
-    border-radius: 10px !important;
     font-weight: 800 !important;
-}
-
-/* =========================================================
-PROGRESS BAR
-========================================================= */
-
-.stProgress > div > div > div > div {
-    background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
-}
-
-/* =========================================================
-SIDEBAR FIX
-========================================================= */
-
-section[data-testid="stSidebar"] {
-    background: #05060B !important;
 }
 
 </style>
