@@ -13,29 +13,38 @@ from utils import (
 
 st.set_page_config(
     page_title="Juxtapose Merit",
-    page_icon="🚀",
+    page_icon="⚡",
     layout="wide"
 )
 
 # =========================================================
-# GLOBAL STYLES (FULL FIXED UI THEME)
+# CYBER NEON UI THEME
 # =========================================================
 
 st.markdown("""
 <style>
 
 /* =========================================================
-BACKGROUND
+DARK CYBER BACKGROUND
 ========================================================= */
 
 .stApp {
-    background: linear-gradient(
-        135deg,
-        #0B1120 0%,
-        #111827 50%,
-        #172554 100%
-    );
-    color: white;
+    background: radial-gradient(circle at top, #0B1220 0%, #05070F 50%, #02040A 100%);
+    color: #E5E7EB;
+}
+
+/* moving glow overlay */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(0,120,255,0.08), transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(168,85,247,0.06), transparent 50%);
+    pointer-events: none;
 }
 
 /* =========================================================
@@ -43,8 +52,8 @@ GLOBAL TEXT
 ========================================================= */
 
 html, body, [class*="css"] {
-    color: white;
-    font-family: Inter, sans-serif;
+    font-family: 'Inter', sans-serif;
+    color: #E5E7EB;
 }
 
 /* =========================================================
@@ -53,148 +62,185 @@ MAIN CONTAINER
 
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 2rem;
-    max-width: 1150px;
+    padding-bottom: 3rem;
+    max-width: 1200px;
 }
 
 /* =========================================================
-GLASS CARD (UNIVERSAL FIX)
-THIS FIXES YOUR "WHITE BOX PROBLEM"
+CYBER GLASS CARDS
 ========================================================= */
 
 div[data-testid="stVerticalBlock"],
 div[data-testid="stHorizontalBlock"] {
     background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
+    border: 1px solid rgba(0,255,200,0.12);
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 20px rgba(0,255,200,0.05),
+        inset 0 0 20px rgba(0,120,255,0.03);
+
     padding: 18px;
 }
 
 /* =========================================================
-HERO TITLE
+TITLE (NEON CYBER GLOW)
 ========================================================= */
 
 .hero-title {
-    font-size: 4.5rem;
-    font-weight: 800;
+    font-size: 4.2rem;
+    font-weight: 900;
     text-align: center;
 
-    background: linear-gradient(90deg, #60A5FA, #10B981);
+    background: linear-gradient(90deg, #00FFC6, #38BDF8, #A78BFA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 20px rgba(0,255,198,0.15),
+        0 0 40px rgba(56,189,248,0.10);
 }
 
 .hero-sub {
     text-align: center;
-    font-size: 1.2rem;
-    color: #CBD5E1;
+    font-size: 1.1rem;
+    color: #94A3B8;
     margin-bottom: 2.5rem;
 }
 
 /* =========================================================
-INPUTS (FIX WHITE BOXES)
+INPUTS (CYBER TERMINAL STYLE)
 ========================================================= */
 
 textarea,
 input {
-    background-color: rgba(15,23,42,0.85) !important;
-    color: white !important;
-    border-radius: 14px !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
+    background: rgba(2,6,23,0.8) !important;
+    color: #E5E7EB !important;
+
+    border: 1px solid rgba(0,255,200,0.15) !important;
+    border-radius: 12px !important;
+
+    box-shadow: inset 0 0 10px rgba(0,255,200,0.05);
 }
 
 /* =========================================================
-FILE UPLOADER FIX
+FILE UPLOADER
 ========================================================= */
 
 [data-testid="stFileUploader"] {
-    background: rgba(15,23,42,0.65) !important;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.10);
-    padding: 20px;
+    background: rgba(2,6,23,0.7) !important;
+    border: 1px solid rgba(0,255,200,0.15);
+    border-radius: 16px;
+    padding: 18px;
 }
 
 /* =========================================================
-METRICS FIX
+METRICS (NEON PANELS)
 ========================================================= */
 
 [data-testid="metric-container"] {
-    background: rgba(255,255,255,0.04) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 18px;
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(0,255,200,0.12) !important;
+    border-radius: 16px;
     padding: 16px;
+
+    box-shadow: 0 0 15px rgba(0,255,200,0.05);
+}
+
+/* metric values glow */
+[data-testid="metric-container"] label {
+    color: #94A3B8 !important;
 }
 
 /* =========================================================
-BUTTONS
+BUTTONS (NEON CYBER CORE)
 ========================================================= */
 
 .stButton > button {
     width: 100%;
-    background: linear-gradient(90deg, #3B82F6, #10B981);
-    color: white;
+    background: linear-gradient(90deg, #00FFC6, #38BDF8, #A78BFA);
+    color: #0B0F1A;
+
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
+
+    font-weight: 800;
+
     padding: 14px;
-    font-weight: 700;
-    transition: 0.25s;
+
+    box-shadow:
+        0 0 15px rgba(0,255,198,0.25),
+        0 0 30px rgba(56,189,248,0.15);
+
+    transition: 0.2s ease-in-out;
 }
 
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(59,130,246,0.35);
+    box-shadow:
+        0 0 25px rgba(0,255,198,0.35),
+        0 0 50px rgba(56,189,248,0.25);
 }
 
 /* =========================================================
-PROGRESS BAR
+PROGRESS BAR (CYBER ENERGY BAR)
 ========================================================= */
 
 .stProgress > div > div > div > div {
-    background: linear-gradient(90deg, #3B82F6, #10B981);
+    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    box-shadow: 0 0 10px rgba(0,255,198,0.4);
 }
 
 /* =========================================================
-SIDEBAR
+INFO BOXES
+========================================================= */
+
+.stAlert {
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(0,255,200,0.12) !important;
+    border-radius: 12px;
+}
+
+/* =========================================================
+SIDEBAR CYBER STYLE
 ========================================================= */
 
 section[data-testid="stSidebar"] {
-    background: rgba(15,23,42,0.85);
+    background: rgba(2,6,23,0.9);
+    border-right: 1px solid rgba(0,255,200,0.15);
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# HERO SECTION
+# HERO
 # =========================================================
 
 st.markdown("""
 <h1 class="hero-title">Juxtapose Merit</h1>
-<p class="hero-sub">AI-Powered Resume Intelligence & ATS Optimization</p>
+<p class="hero-sub">AI Resume Intelligence • ATS Optimization • Cyber Analysis Engine</p>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# INPUT SECTION
+# INPUTS
 # =========================================================
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.file_uploader("📄 Upload Resume", type=["pdf"])
+    uploaded_file = st.file_uploader("📄 Upload Resume", type=["pdf"])
 
 with col2:
     job_description = st.text_area(
         "💼 Paste Job Description",
-        height=300,
-        placeholder="Paste the job description here..."
+        height=280,
+        placeholder="Analyze a job role..."
     )
 
 # =========================================================
-# ANALYSIS
+# ANALYSIS ENGINE
 # =========================================================
-
-uploaded_file = st.session_state.get("file_uploader")
 
 if uploaded_file and job_description:
 
@@ -208,27 +254,19 @@ if uploaded_file and job_description:
             if text:
                 resume_text += text
 
-        st.success("Resume uploaded successfully!")
-
     except Exception:
-        st.error("Error reading PDF.")
+        st.error("PDF parsing failed.")
         st.stop()
 
     if not resume_text:
-        st.warning("No text found in PDF.")
+        st.warning("No readable text found.")
         st.stop()
 
-    # =====================================================
-    # AI ENGINE
-    # =====================================================
-
-    (
-        match_score,
-        matched_keywords,
-        missing_skills,
-        job_type,
-        seniority
-    ) = get_match_percentage(resume_text, job_description)
+    # AI ANALYSIS
+    match_score, matched_keywords, missing_skills, job_type, seniority = get_match_percentage(
+        resume_text,
+        job_description
+    )
 
     feedback = generate_ai_suggestions(
         match_score,
@@ -240,40 +278,40 @@ if uploaded_file and job_description:
     st.divider()
 
     # =====================================================
-    # METRICS
+    # DASHBOARD METRICS
     # =====================================================
 
     m1, m2, m3 = st.columns(3)
 
-    m1.metric("🎯 Match Score", f"{match_score}%")
-    m2.metric("💼 Career Field", job_type)
-    m3.metric("📈 Seniority", seniority)
+    m1.metric("⚡ Match Score", f"{match_score}%")
+    m2.metric("🧠 Role Type", job_type)
+    m3.metric("📊 Seniority", seniority)
 
     st.progress(match_score / 100)
 
     st.divider()
 
     # =====================================================
-    # SKILLS
+    # SKILL MATRIX
     # =====================================================
 
     c1, c2 = st.columns(2)
 
     with c1:
-        st.subheader("✅ Matching Skills")
-        st.write(", ".join(matched_keywords) if matched_keywords else "No strong matches found.")
+        st.subheader("✅ Matched Signals")
+        st.write(", ".join(matched_keywords) if matched_keywords else "No strong matches detected.")
 
     with c2:
-        st.subheader("⚠️ Missing Skills")
-        st.write(", ".join(missing_skills) if missing_skills else "No missing skills detected!")
+        st.subheader("⚠️ Missing Signals")
+        st.write(", ".join(missing_skills) if missing_skills else "Fully aligned.")
 
     st.divider()
 
     # =====================================================
-    # AI FEEDBACK
+    # AI ENGINE OUTPUT
     # =====================================================
 
-    st.subheader("💡 AI Resume Coach Feedback")
+    st.subheader("🧠 AI Strategy Output")
     st.write(feedback)
 
     st.divider()
@@ -282,9 +320,9 @@ if uploaded_file and job_description:
     # CHAT COACH
     # =====================================================
 
-    st.subheader("💬 AI Resume Chat Coach")
+    st.subheader("💬 AI Career Terminal")
 
-    user_question = st.text_input("Ask a question about your resume")
+    user_question = st.text_input("Ask the system")
 
     if user_question:
         response = chat_response(
@@ -299,35 +337,31 @@ if uploaded_file and job_description:
     st.divider()
 
     # =====================================================
-    # DOWNLOAD REPORT
+    # EXPORT
     # =====================================================
 
     report = f"""
-Juxtapose Merit - ATS Report
+JUXTAPOSE MERIT CYBER REPORT
 
-Career Field: {job_type}
+Role: {job_type}
 Seniority: {seniority}
 Match Score: {match_score}%
 
-Matching Skills:
+Matched:
 {', '.join(matched_keywords)}
 
-Missing Skills:
+Missing:
 {', '.join(missing_skills)}
 
-AI Feedback:
+AI OUTPUT:
 {feedback}
 """
 
     st.download_button(
-        "📥 Download ATS Report",
+        "⬇ Download Report",
         report,
-        file_name="resume_analysis_report.txt"
+        file_name="cyber_resume_report.txt"
     )
 
-# =========================================================
-# DEFAULT STATE
-# =========================================================
-
 else:
-    st.info("Upload your resume and paste a job description to begin analysis.")
+    st.info("Upload a resume + job description to initialize the analysis engine.")
