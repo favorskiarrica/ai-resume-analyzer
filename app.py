@@ -7,9 +7,9 @@ from utils import (
     chat_response,
 )
 
-# =========================================================
+# =========================
 # PAGE CONFIG
-# =========================================================
+# =========================
 
 st.set_page_config(
     page_title="Juxtapose Merit",
@@ -17,46 +17,60 @@ st.set_page_config(
     layout="wide"
 )
 
-# =========================================================
-# SAFE INLINE CSS (NO FILE DEPENDENCY)
-# =========================================================
+# =========================
+# CSS (SAFE + SIMPLE + STABLE)
+# =========================
+
 st.markdown("""
 <style>
 
-/* FORCE APP BACKGROUND */
+/* BACKGROUND */
 .stApp {
-    background: #05060B !important;
-    color: #E5E7EB !important;
+    background: #05060B;
+    color: #E5E7EB;
 }
 
-/* REMOVE STREAMLIT DEFAULT SURFACES */
+/* REMOVE DEFAULT WHITE AREAS */
 section, div {
     background: transparent !important;
 }
 
-/* TEXT FIX (PURPLE REMOVAL) */
-h1, h2, h3, p, span, label {
-    color: #E5E7EB !important;
+/* HERO */
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(90deg, #00FFC6, #38BDF8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* FILE UPLOADER FIX */
+.hero-sub {
+    text-align: center;
+    color: #94A3B8;
+    margin-bottom: 2rem;
+}
+
+/* FILE UPLOAD */
 [data-testid="stFileUploader"] {
     background: #0B1220 !important;
     border: 1px solid #00FFC6 !important;
     border-radius: 12px !important;
 }
 
-/* INPUT FIELDS */
+/* INPUTS */
 textarea, input {
     background: #0B1220 !important;
     color: white !important;
     border: 1px solid #00FFC6 !important;
+    border-radius: 10px !important;
 }
 
 /* METRICS */
 [data-testid="metric-container"] {
     background: #0B1220 !important;
     border: 1px solid #00FFC6 !important;
+    border-radius: 12px !important;
 }
 
 /* BUTTONS */
@@ -64,9 +78,10 @@ textarea, input {
     background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
     color: #05060B !important;
     font-weight: 800 !important;
+    border-radius: 10px !important;
 }
 
-/* PROGRESS BAR */
+/* PROGRESS */
 .stProgress > div > div > div > div {
     background: linear-gradient(90deg, #00FFC6, #38BDF8) !important;
 }
@@ -74,18 +89,18 @@ textarea, input {
 </style>
 """, unsafe_allow_html=True)
 
-# =========================================================
+# =========================
 # HERO
-# =========================================================
+# =========================
 
 st.markdown("""
 <h1 class="hero-title">Juxtapose Merit</h1>
 <p class="hero-sub">AI Resume Intelligence • ATS Optimization Engine</p>
 """, unsafe_allow_html=True)
 
-# =========================================================
+# =========================
 # INPUTS
-# =========================================================
+# =========================
 
 col1, col2 = st.columns(2)
 
@@ -93,15 +108,11 @@ with col1:
     uploaded_file = st.file_uploader("📄 Upload Resume", type=["pdf"])
 
 with col2:
-    job_description = st.text_area(
-        "💼 Paste Job Description",
-        height=260,
-        placeholder="Paste job description here..."
-    )
+    job_description = st.text_area("💼 Paste Job Description", height=250)
 
-# =========================================================
-# ANALYSIS ENGINE
-# =========================================================
+# =========================
+# ANALYSIS
+# =========================
 
 if uploaded_file and job_description:
 
@@ -116,14 +127,14 @@ if uploaded_file and job_description:
                 resume_text += text
 
     except Exception:
-        st.error("Could not read PDF.")
+        st.error("PDF read error")
         st.stop()
 
     if not resume_text:
-        st.warning("No readable text found in PDF.")
+        st.warning("No text found in PDF")
         st.stop()
 
-    # AI ANALYSIS
+    # AI
     match_score, matched_keywords, missing_skills, job_type, seniority = get_match_percentage(
         resume_text,
         job_description
@@ -138,91 +149,64 @@ if uploaded_file and job_description:
 
     st.divider()
 
-    # =====================================================
     # METRICS
-    # =====================================================
+    c1, c2, c3 = st.columns(3)
 
-    m1, m2, m3 = st.columns(3)
-
-    m1.metric("⚡ Match Score", f"{match_score}%")
-    m2.metric("🧠 Role", job_type)
-    m3.metric("📊 Level", seniority)
+    c1.metric("Match Score", f"{match_score}%")
+    c2.metric("Role", job_type)
+    c3.metric("Level", seniority)
 
     st.progress(match_score / 100)
 
     st.divider()
 
-    # =====================================================
     # SKILLS
-    # =====================================================
+    c4, c5 = st.columns(2)
 
-    c1, c2 = st.columns(2)
+    c4.subheader("Matched Skills")
+    c4.write(", ".join(matched_keywords) or "None")
 
-    with c1:
-        st.subheader("Matched Skills")
-        st.write(", ".join(matched_keywords) if matched_keywords else "None")
-
-    with c2:
-        st.subheader("Missing Skills")
-        st.write(", ".join(missing_skills) if missing_skills else "Fully aligned")
+    c5.subheader("Missing Skills")
+    c5.write(", ".join(missing_skills) or "Fully aligned")
 
     st.divider()
 
-    # =====================================================
-    # AI FEEDBACK
-    # =====================================================
-
+    # FEEDBACK
     st.subheader("AI Feedback")
     st.write(feedback)
 
     st.divider()
 
-    # =====================================================
     # CHAT
-    # =====================================================
+    st.subheader("AI Chat Coach")
 
-    st.subheader("AI Career Chat")
+    q = st.text_input("Ask something")
 
-    user_question = st.text_input("Ask a question")
-
-    if user_question:
-        response = chat_response(
-            user_question,
+    if q:
+        st.write(chat_response(
+            q,
             match_score,
             matched_keywords,
             missing_skills,
             job_type
-        )
-        st.write(response)
+        ))
 
     st.divider()
 
-    # =====================================================
     # DOWNLOAD
-    # =====================================================
-
     report = f"""
-Resume Analysis Report
-
 Role: {job_type}
 Level: {seniority}
 Score: {match_score}%
 
-Matched:
-{', '.join(matched_keywords)}
-
-Missing:
-{', '.join(missing_skills)}
+Matched: {', '.join(matched_keywords)}
+Missing: {', '.join(missing_skills)}
 
 Feedback:
 {feedback}
 """
 
-    st.download_button(
-        "Download Report",
-        report,
-        file_name="resume_report.txt"
-    )
+    st.download_button("Download Report", report)
 
 else:
-    st.info("Upload resume + job description to begin.")
+    st.info("Upload resume + job description to start")
