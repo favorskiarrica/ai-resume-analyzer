@@ -5,7 +5,6 @@ from utils import (
     get_match_percentage,
     generate_ai_suggestions,
     chat_response,
-    detect_job_type
 )
 
 # =========================================================
@@ -13,127 +12,233 @@ from utils import (
 # =========================================================
 
 st.set_page_config(
-    page_title="ResumeAI",
-    page_icon="📄",
+    page_title="Juxtapose Merit",
+    page_icon="🚀",
     layout="wide"
 )
 
 # =========================================================
-# DARK MODE STYLING
+# PREMIUM UI STYLING
 # =========================================================
 
 st.markdown("""
 <style>
 
-/* Main app background */
+/* =========================================================
+BACKGROUND
+========================================================= */
+
 .stApp {
-    background-color: #0E1117;
+    background:
+    linear-gradient(
+        135deg,
+        #0F172A 0%,
+        #111827 50%,
+        #1E293B 100%
+    );
     color: white;
 }
 
-/* Global text */
+/* =========================================================
+GLOBAL
+========================================================= */
+
 html, body, [class*="css"] {
     color: white;
+    font-family: 'Inter', sans-serif;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #161B22;
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 1200px;
 }
 
-/* Text inputs */
-.stTextInput input,
-.stTextArea textarea {
-    background-color: #262730;
+/* =========================================================
+HERO SECTION
+========================================================= */
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 0;
+    background: linear-gradient(90deg, #60A5FA, #A78BFA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #CBD5E1;
+    margin-bottom: 3rem;
+}
+
+/* =========================================================
+GLASS CARDS
+========================================================= */
+
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 25px;
+    border-radius: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+
+/* =========================================================
+TEXT INPUTS
+========================================================= */
+
+.stTextArea textarea,
+.stTextInput input {
+    background-color: rgba(255,255,255,0.08);
     color: white;
-    border-radius: 10px;
-    border: 1px solid #444;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* File uploader */
+/* =========================================================
+UPLOAD BOX
+========================================================= */
+
 [data-testid="stFileUploader"] {
-    background-color: #262730;
-    border-radius: 10px;
-    padding: 10px;
-}
-
-/* Buttons */
-.stButton > button {
-    background-color: #4F8BF9;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    padding: 10px 20px;
-    font-weight: bold;
-}
-
-/* Metric card */
-[data-testid="metric-container"] {
-    background-color: #1E1E1E;
-    border-radius: 10px;
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 16px;
     padding: 15px;
+    border: 1px solid rgba(255,255,255,0.10);
 }
 
-/* Success message */
-.stSuccess {
-    background-color: #1E4620;
+/* =========================================================
+BUTTONS
+========================================================= */
+
+.stButton > button {
+    width: 100%;
+    background:
+    linear-gradient(
+        90deg,
+        #3B82F6,
+        #8B5CF6
+    );
+
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
-/* Warning message */
-.stWarning {
-    background-color: #4B3B00;
+.stButton > button:hover {
+    transform: scale(1.02);
 }
 
-/* Info box */
-.stInfo {
-    background-color: #102A43;
+/* =========================================================
+METRIC CARDS
+========================================================= */
+
+[data-testid="metric-container"] {
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.10);
 }
 
-/* Progress bar */
+/* =========================================================
+PROGRESS BAR
+========================================================= */
+
 .stProgress > div > div > div > div {
-    background-color: #4F8BF9;
+    background:
+    linear-gradient(
+        90deg,
+        #3B82F6,
+        #8B5CF6
+    );
+}
+
+/* =========================================================
+SIDEBAR
+========================================================= */
+
+section[data-testid="stSidebar"] {
+    background: #0F172A;
+}
+
+/* =========================================================
+INFO / SUCCESS / WARNING
+========================================================= */
+
+.stInfo {
+    background-color: rgba(59,130,246,0.15);
+}
+
+.stSuccess {
+    background-color: rgba(16,185,129,0.15);
+}
+
+.stWarning {
+    background-color: rgba(245,158,11,0.15);
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# HEADER
+# HERO SECTION
 # =========================================================
 
-st.title("🚀 ResumeAI")
-st.subheader("Smart Resume → Job Matching System")
+st.markdown("""
+<h1 class="hero-title">
+Juxtapose Merit
+</h1>
 
-st.write(
-    "Upload your resume and paste a job description to analyze "
-    "your ATS match score, missing skills, strengths, and AI feedback."
-)
-
-st.divider()
-
-# =========================================================
-# INPUTS
-# =========================================================
-
-uploaded_file = st.file_uploader(
-    "📄 Upload Resume (PDF)",
-    type=["pdf"]
-)
-
-job_description = st.text_area(
-    "💼 Paste Job Description",
-    placeholder="Paste the job description here..."
-)
+<p class="hero-sub">
+AI-Powered Resume Intelligence & ATS Optimization
+</p>
+""", unsafe_allow_html=True)
 
 # =========================================================
-# PROCESSING
+# INPUT SECTION
+# =========================================================
+
+col1, col2 = st.columns([1, 1])
+
+with col1:
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    uploaded_file = st.file_uploader(
+        "📄 Upload Resume",
+        type=["pdf"]
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    job_description = st.text_area(
+        "💼 Paste Job Description",
+        height=250,
+        placeholder="Paste the job description here..."
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# =========================================================
+# ANALYSIS
 # =========================================================
 
 if uploaded_file is not None and job_description:
 
     resume_text = ""
-
-    # ---------------- PDF EXTRACTION ---------------- #
 
     try:
 
@@ -153,15 +258,13 @@ if uploaded_file is not None and job_description:
         st.error("❌ Error reading PDF file.")
         st.stop()
 
-    # ---------------- EMPTY CHECK ---------------- #
-
     if not resume_text:
 
-        st.warning("⚠️ Could not extract text from the PDF.")
+        st.warning("⚠️ Could not extract text from PDF.")
         st.stop()
 
     # =========================================================
-    # ANALYSIS
+    # ATS ANALYSIS
     # =========================================================
 
     (
@@ -182,76 +285,81 @@ if uploaded_file is not None and job_description:
         job_type
     )
 
-    # =========================================================
-    # RESULTS
-    # =========================================================
-
     st.divider()
 
-    # Career Field
-    st.subheader("🧠 Detected Career Field")
-    st.info(job_type)
+    # =========================================================
+    # TOP METRICS
+    # =========================================================
 
-    # Seniority
-    st.subheader("📊 Seniority Level Detected")
-    st.info(seniority)
+    metric1, metric2, metric3 = st.columns(3)
 
-    # Match Score
-    st.subheader("🎯 Job Match Score")
+    with metric1:
+        st.metric("🎯 Match Score", f"{match_score}%")
 
-    st.metric(
-        "Match %",
-        f"{match_score}%"
-    )
+    with metric2:
+        st.metric("💼 Career Field", job_type)
+
+    with metric3:
+        st.metric("📈 Seniority", seniority)
 
     st.progress(match_score / 100)
 
-    # =========================================================
-    # MATCHING SKILLS
-    # =========================================================
-
-    st.subheader("✅ Matching Skills")
-
-    if matched_keywords:
-
-        st.write(", ".join(matched_keywords))
-
-    else:
-
-        st.write("No strong matching skills found.")
+    st.divider()
 
     # =========================================================
-    # MISSING SKILLS
+    # RESULTS CARDS
     # =========================================================
 
-    st.subheader("⚠️ Missing Key Skills")
+    colA, colB = st.columns(2)
 
-    if missing_skills:
+    with colA:
 
-        st.write(", ".join(missing_skills))
+        st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    else:
+        st.subheader("✅ Matching Skills")
 
-        st.write("🎉 You're covering all major skills!")
+        if matched_keywords:
+            st.write(", ".join(matched_keywords))
+        else:
+            st.write("No strong matches found.")
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with colB:
+
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+
+        st.subheader("⚠️ Missing Skills")
+
+        if missing_skills:
+            st.write(", ".join(missing_skills))
+        else:
+            st.write("🎉 No missing skills detected!")
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # =========================================================
     # AI FEEDBACK
     # =========================================================
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
     st.subheader("💡 AI Resume Coach Feedback")
 
     st.write(feedback)
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
     # =========================================================
-    # CHATBOT SECTION
+    # CHATBOT
     # =========================================================
 
-    st.divider()
+    st.markdown('<div class="card">', unsafe_allow_html=True)
 
     st.subheader("💬 AI Resume Chat Coach")
 
     user_question = st.text_input(
-        "Ask anything about your resume:"
+        "Ask a question about your resume"
     )
 
     if user_question:
@@ -266,14 +374,14 @@ if uploaded_file is not None and job_description:
 
         st.write(response)
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
     # =========================================================
     # DOWNLOAD REPORT
     # =========================================================
 
-    st.divider()
-
     report = f"""
-Resume Analysis Report
+Juxtapose Merit - Resume Analysis Report
 
 ==================================================
 
@@ -300,7 +408,7 @@ AI FEEDBACK:
 """
 
     st.download_button(
-        label="📥 Download Resume Report",
+        label="📥 Download ATS Report",
         data=report,
         file_name="resume_analysis_report.txt",
         mime="text/plain"
@@ -312,7 +420,11 @@ AI FEEDBACK:
 
 else:
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
     st.info(
         "📄 Upload your resume and paste a job description "
-        "to begin analysis."
+        "to begin ATS analysis."
     )
+
+    st.markdown('</div>', unsafe_allow_html=True)
